@@ -23,8 +23,9 @@ def spine_prm(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def spine_preprocessing(df: pd.DataFrame, params: Dict[str, int]) -> pd.DataFrame:
+def spine_preprocessing(df: pd.DataFrame, clientes_df: pd.DataFrame, params: Dict[str, int]) -> pd.DataFrame:
 
+    df = df.merge(clientes_df, on="id_cliente", how="inner")
     df = df.reset_index(drop=True)
 
     # adicionar uma data de faturamento fake para pedidos sem faturamento

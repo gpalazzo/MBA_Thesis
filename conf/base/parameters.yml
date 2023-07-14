@@ -5,3 +5,6 @@ spine_params:
   # quantidades de dias, em média, que o faturamento é feito apenas o pedido
   # apenas para pedidos onde não há faturamento, é um dado fake para considerar os pedidos de label "não_compra"
   dt_pedido_fake_sum: 60
+
+clientes_params:
+  cultura: "laranja"

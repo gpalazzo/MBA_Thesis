@@ -4,7 +4,7 @@ from typing import Dict
 
 from kedro.pipeline import Pipeline, pipeline
 
-from itaete_buy_prop.pipelines import spine_pipeline
+from itaete_buy_prop.pipelines import clientes_pipeline, spine_pipeline
 
 
 def register_pipelines() -> Dict[str, Pipeline]:
@@ -13,4 +13,4 @@ def register_pipelines() -> Dict[str, Pipeline]:
     Returns:
         A mapping from a pipeline name to a ``Pipeline`` object.
     """
-    return {"__default__": pipeline([spine_pipeline()])}
+    return {"__default__": pipeline([spine_pipeline() + clientes_pipeline()])}

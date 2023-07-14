@@ -1,4 +1,4 @@
-raw_crm_bi:
+raw_crm_bi_analise_financeira:
   type: pandas.ExcelDataSet
   filepath: "data/01_raw/Dados CRM e BI - TCC - Atualizado.xlsx"
   load_args:
@@ -15,3 +15,15 @@ preprocessing_spine:
 label_spine:
   type: pandas.ParquetDataSet
   filepath: "data/05_model_input/spine_label.parquet"
+
+# -----------------------------------------
+
+raw_crm_bi_quali_clientes:
+  type: pandas.ExcelDataSet
+  filepath: "data/01_raw/Dados CRM e BI - TCC - Atualizado.xlsx"
+  load_args:
+    sheet_name: "Qualificação Clientes - CRM"
+
+prm_quali_clientes:
+  type: pandas.ParquetDataSet
+  filepath: "data/03_primary/quali_clientes_prm.parquet"
