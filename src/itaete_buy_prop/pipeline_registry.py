@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
 """Project pipelines."""
 from typing import Dict
 
 from kedro.pipeline import Pipeline, pipeline
+
 from itaete_buy_prop.pipelines import spine_pipeline
 
 

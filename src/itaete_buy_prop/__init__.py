@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """itaete_buy_prop
 """
 

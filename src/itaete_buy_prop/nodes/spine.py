@@ -1,7 +1,9 @@
-import pandas as pd
-import numpy as np
-from typing import Dict
+# -*- coding: utf-8 -*-
 from datetime import timedelta
+from typing import Dict
+
+import numpy as np
+import pandas as pd
 
 
 def spine_prm(df: pd.DataFrame) -> pd.DataFrame:
@@ -22,7 +24,7 @@ def spine_prm(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def spine_preprocessing(df: pd.DataFrame, params: Dict[str, int]) -> pd.DataFrame:
-    
+
     df = df.reset_index(drop=True)
 
     # adicionar uma data de faturamento fake para pedidos sem faturamento
@@ -37,7 +39,7 @@ def spine_preprocessing(df: pd.DataFrame, params: Dict[str, int]) -> pd.DataFram
     df.loc[:, "data_inferior"] = df["data_faturamento_nova"].apply(lambda row: row \
                                                             if pd.isnull(row) \
                                                             else row - timedelta(days=params["dt_fat_lookback_window"]))
-    
+
     # ajuste para considerar apenas os itens em que a data do pedido é maior em, no máximo, 30 dias da data do faturamento
     df = df.reset_index(drop=True)
     df1 = df[df["data_pedido"].isnull()]

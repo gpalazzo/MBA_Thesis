@@ -1,1 +1,2 @@
-from .spine import spine_prm, spine_labeling, spine_preprocessing
+# -*- coding: utf-8 -*-
+from .spine import spine_labeling, spine_preprocessing, spine_prm

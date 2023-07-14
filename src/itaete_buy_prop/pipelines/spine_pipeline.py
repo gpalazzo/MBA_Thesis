@@ -8,7 +8,8 @@
 """
 
 from kedro.pipeline import Pipeline, node, pipeline
-from itaete_buy_prop.nodes import spine_prm, spine_labeling, spine_preprocessing
+
+from itaete_buy_prop.nodes import spine_labeling, spine_preprocessing, spine_prm
 
 
 def spine_pipeline() -> pipeline:

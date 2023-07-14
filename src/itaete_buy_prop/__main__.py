@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """itaete_buy_prop file for ensuring the package is executable
 as `itaete_buy_prop` and `python -m itaete_buy_prop`
 """
