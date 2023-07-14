@@ -1,0 +1,7 @@
+spine_params:
+  dt_fat_lookback_window: 90 #dias
+  #diferença de dias permitido entre data do pedido e do faturamento, sendo pedido > faturamento  
+  dt_fat_pedido_diffdays: 30
+  # quantidades de dias, em média, que o faturamento é feito apenas o pedido
+  # apenas para pedidos onde não há faturamento, é um dado fake para considerar os pedidos de label "não_compra"
+  dt_pedido_fake_sum: 60

@@ -1,4 +1,17 @@
-# Here you can define all your data sets by using simple YAML syntax.
-#
-# Documentation for this file format can be found in "The Data Catalog"
-# Link: https://kedro.readthedocs.io/en/stable/data/data_catalog.html
+raw_crm_bi:
+  type: pandas.ExcelDataSet
+  filepath: "data/01_raw/Dados CRM e BI - TCC - Atualizado.xlsx"
+  load_args:
+    sheet_name: "Análise Fin - BI"
+
+prm_spine:
+  type: pandas.ParquetDataSet
+  filepath: "data/03_primary/spine_prm.parquet"
+
+preprocessing_spine:
+  type: pandas.ParquetDataSet
+  filepath: "data/03_primary/spine_preprocessing.parquet"
+
+label_spine:
+  type: pandas.ParquetDataSet
+  filepath: "data/05_model_input/spine_label.parquet"
