@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from datetime import timedelta
+from datetime import datetime, timedelta
 from typing import Dict
 
 import numpy as np
@@ -29,8 +29,14 @@ def spine_preprocessing(df: pd.DataFrame, clientes_df: pd.DataFrame, params: Dic
     df = df.reset_index(drop=True)
 
     # adicionar uma data de faturamento fake para pedidos sem faturamento
+    lower_bound_date_pedido = datetime.now().date() - timedelta(days=params["qtd_dias_lookback_pedidos"])
+    dfaux = df[df["data_pedido"] >= lower_bound_date_pedido]
+    diff_days = (dfaux["data_faturamento"] - dfaux["data_pedido"]).dt.days
+    diff_days = diff_days.dropna()
+    median_days = np.median(diff_days)
+
     df1 = df[(df["data_pedido"].notnull()) & (df["data_faturamento"].isnull())]
-    df1.loc[:, "data_faturamento_nova"] = df["data_pedido"] + timedelta(days=params["dt_pedido_fake_sum"])
+    df1.loc[:, "data_faturamento_nova"] = df["data_pedido"] + timedelta(days=median_days)
 
     df = df.drop(df1.index)
     df.loc[:, "data_faturamento_nova"] = df["data_faturamento"].copy()
@@ -48,8 +54,8 @@ def spine_preprocessing(df: pd.DataFrame, clientes_df: pd.DataFrame, params: Dic
     df2 = df2[df2["data_faturamento"].isnull()]
 
     df_nulls = pd.concat([df1, df2])
-    df3 = df.drop(df_nulls.index)
 
+    df3 = df.drop(df_nulls.index)
     df3.loc[:, "data_faturamento_aux"] = df3["data_faturamento"] + timedelta(days=params["dt_fat_pedido_diffdays"])
     df3 = df3[df3["data_faturamento_aux"] >= df3["data_pedido"]]
 
@@ -59,6 +65,7 @@ def spine_preprocessing(df: pd.DataFrame, clientes_df: pd.DataFrame, params: Dic
     df_final = df_final.drop(columns=["data_faturamento_aux"])
 
     return df_final
+
 
 def spine_labeling(df: pd.DataFrame) -> pd.DataFrame:
 
