@@ -46,6 +46,9 @@ def spine_preprocessing(df: pd.DataFrame, clientes_df: pd.DataFrame, params: Dic
     df.loc[:, "data_inferior"] = df["data_faturamento_nova"].apply(lambda row: row \
                                                             if pd.isnull(row) \
                                                             else row - timedelta(days=params["dt_fat_lookback_window"]))
+    df.loc[:, "data_superior"] = df["data_faturamento_nova"].apply(lambda row: row \
+                                                            if pd.isnull(row) \
+                                                            else row + timedelta(days=params["dt_fat_lookforward_window"]))
 
     # ajuste para considerar apenas os itens em que a data do pedido é maior em, no máximo, 30 dias da data do faturamento
     df = df.reset_index(drop=True)
