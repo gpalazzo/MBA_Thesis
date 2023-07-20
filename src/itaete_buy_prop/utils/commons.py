@@ -3,12 +3,13 @@ import re
 import unicodedata
 from typing import List
 
+import numpy as np
 import pandas as pd
 
 
 def string_normalizer(_str) -> str:
 
-    if _str is None:
+    if _str in [None, np.nan]:
         return _str
 
     column_new = (
@@ -39,3 +40,18 @@ def col_string_normalizer(
         df.loc[:, col_to_normalize] = df[col_to_normalize].apply(string_normalizer)
 
     return df
+
+
+def build_dummies(df: pd.DataFrame, categ_cols: List[str]) -> pd.DataFrame:
+
+    final_df = df.copy()
+
+    for col in categ_cols:
+        dfaux = pd.get_dummies(df[col])
+
+        dfaux = dfaux.add_prefix(f"bool_{col}_")
+        final_df = final_df.rename(columns={col: f"ctg_{col}"})
+
+        final_df = pd.concat([final_df, dfaux], axis=1)
+
+    return final_df

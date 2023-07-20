@@ -39,3 +39,13 @@ raw_crm_bi_origem_receita_frota:
 prm_origem_receita_frota:
   type: pandas.ParquetDataSet
   filepath: "data/03_primary/origem_receita_frota_prm.parquet"
+
+# -----------------------------------------
+
+prm_analise_fin:
+  type: pandas.ParquetDataSet
+  filepath: "data/03_primary/analise_fin_prm.parquet"
+
+fte_analise_fin:
+  type: pandas.ParquetDataSet
+  filepath: "data/04_feature/analise_fin_fte.parquet"
