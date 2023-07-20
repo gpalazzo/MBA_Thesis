@@ -4,7 +4,7 @@ from typing import Dict
 import pandas as pd
 
 
-def clientes_prm(df: pd.DataFrame, params: Dict[str, str]) -> pd.DataFrame:
+def quali_clientes_prm(df: pd.DataFrame, params: Dict[str, str]) -> pd.DataFrame:
 
     df = df[["SEQPESSOA", "ORIGEM RECEITA"]].rename(columns={"SEQPESSOA": "id_cliente",
                                                              "ORIGEM RECEITA": "origem_receita"})
