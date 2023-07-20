@@ -10,9 +10,9 @@ def quali_clientes_pipeline() -> pipeline:
     _quali_clientes_pipeline = pipeline(
         Pipeline([
             node(func=quali_clientes_prm,
-                inputs=["raw_crm_bi_quali_clientes", "params:clientes_params"],
+                inputs=["raw_crm_bi_quali_clientes", "prm_origem_receita_frota"],
                 outputs="prm_quali_clientes",
-                name="run_clientes_prm")
+                name="run_quali_clientes_prm")
         ],
         tags=["quali_clientes_pipeline"]))
 

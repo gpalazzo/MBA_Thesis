@@ -15,7 +15,7 @@ def spine_pipeline() -> pipeline:
                 name="run_spine_prm"),
 
             node(func=spine_preprocessing,
-                inputs=["prm_spine", "prm_quali_clientes", "params:spine_params"],
+                inputs=["prm_spine", "prm_origem_receita_frota", "params:spine_params"],
                 outputs="preprocessing_spine",
                 name="run_spine_preprocessing"),
 
