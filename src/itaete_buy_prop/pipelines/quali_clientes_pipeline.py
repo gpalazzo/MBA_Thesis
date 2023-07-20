@@ -2,7 +2,7 @@
 
 from kedro.pipeline import Pipeline, node, pipeline
 
-from itaete_buy_prop.nodes import quali_clientes_prm
+from itaete_buy_prop.nodes import quali_clientes_fte, quali_clientes_prm
 
 
 def quali_clientes_pipeline() -> pipeline:
@@ -12,7 +12,12 @@ def quali_clientes_pipeline() -> pipeline:
             node(func=quali_clientes_prm,
                 inputs=["raw_crm_bi_quali_clientes", "prm_origem_receita_frota"],
                 outputs="prm_quali_clientes",
-                name="run_quali_clientes_prm")
+                name="run_quali_clientes_prm"),
+
+            node(func=quali_clientes_fte,
+                inputs="prm_quali_clientes",
+                outputs="fte_quali_clientes",
+                name="run_quali_clientes_fte")
         ],
         tags=["quali_clientes_pipeline"]))
 

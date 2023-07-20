@@ -26,11 +26,17 @@ def origem_receita_frota_prm(df: pd.DataFrame, params: Dict[str, str]) -> pd.Dat
     assert df["numero4desc"].unique()[0] == "Área(ha)*", "Métrica diferente de área, revisar."
 
     df = df.rename(columns={"numero4": "area_ha"})
+
+    return df
+
+
+def origem_receita_frota_fte(df: pd.DataFrame) -> pd.DataFrame:
+
     df = df.groupby(["id_cliente", "ref_date"])["area_ha"] \
         .sum() \
         .reset_index() \
         .rename(columns={"area_ha": "area_ha_somadas"})
 
-    assert df.isnull().sum().sum() == 0, "Nulos no primary, revisar"
+    assert df.isnull().sum().sum() == 0, "Nulos na feature, revisar"
 
     return df

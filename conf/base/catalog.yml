@@ -28,6 +28,10 @@ prm_quali_clientes:
   type: pandas.ParquetDataSet
   filepath: "data/03_primary/quali_clientes_prm.parquet"
 
+fte_quali_clientes:
+  type: pandas.ParquetDataSet
+  filepath: "data/04_feature/quali_clientes_fte.parquet"
+
 # -----------------------------------------
 
 raw_crm_bi_origem_receita_frota:
@@ -39,6 +43,10 @@ raw_crm_bi_origem_receita_frota:
 prm_origem_receita_frota:
   type: pandas.ParquetDataSet
   filepath: "data/03_primary/origem_receita_frota_prm.parquet"
+
+fte_origem_receita_frota:
+  type: pandas.ParquetDataSet
+  filepath: "data/04_feature/origem_receita_frota_fte.parquet"
 
 # -----------------------------------------
 
