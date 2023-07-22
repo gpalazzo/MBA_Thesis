@@ -15,7 +15,7 @@ def analise_fin_pipeline() -> pipeline:
                 name="run_analise_fin_prm"),
 
             node(func=analise_fin_fte,
-                inputs="prm_analise_fin",
+                inputs=["prm_analise_fin", "label_spine"],
                 outputs="fte_analise_fin",
                 name="run_analise_fin_fte")
         ],

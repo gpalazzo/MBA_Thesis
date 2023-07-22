@@ -9,6 +9,9 @@ from itaete_buy_prop.utils import (
 
 
 def quali_clientes_prm(df: pd.DataFrame, clientes_df: pd.DataFrame) -> pd.DataFrame:
+    """essa função está pegando a data de outra aba do excel. isso é uma proxy, validar se faz
+    sentido (apesar de não ser um processo ideal)
+    """
 
     df = df[["SEQPESSOA",
              "FJ",
@@ -22,6 +25,8 @@ def quali_clientes_prm(df: pd.DataFrame, clientes_df: pd.DataFrame) -> pd.DataFr
     df.columns = [string_normalizer(col) for col in df.columns]
     _cols = ["fj", "sts"]
     df = col_string_normalizer(df=df, _cols_to_normalize=_cols)
+
+    assert df[["id_cliente", "ref_date"]].isnull().sum().sum() == 0, "Nulos no primary, revisar"
 
     return df
 

@@ -25,7 +25,11 @@ def origem_receita_frota_prm(df: pd.DataFrame, params: Dict[str, str]) -> pd.Dat
 
     assert df["numero4desc"].unique()[0] == "Área(ha)*", "Métrica diferente de área, revisar."
 
-    df = df.rename(columns={"numero4": "area_ha"})
+    df = df \
+            .rename(columns={"numero4": "area_ha"}) \
+            .drop(columns=["numero4desc", "tipo"])
+
+    assert df[["id_cliente", "ref_date"]].isnull().sum().sum() == 0, "Nulos no primary, revisar"
 
     return df
 
