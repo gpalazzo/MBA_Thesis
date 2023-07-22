@@ -15,7 +15,7 @@ def origem_receita_frota_pipeline() -> pipeline:
                 name="run_origem_receita_frota_prm"),
 
             node(func=origem_receita_frota_fte,
-                inputs="prm_origem_receita_frota",
+                inputs=["prm_origem_receita_frota", "label_spine"],
                 outputs="fte_origem_receita_frota",
                 name="run_origem_receita_frota_fte")
         ],

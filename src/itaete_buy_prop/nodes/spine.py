@@ -25,7 +25,7 @@ def spine_prm(df: pd.DataFrame) -> pd.DataFrame:
 
 def spine_preprocessing(df: pd.DataFrame, clientes_df: pd.DataFrame, params: Dict[str, int]) -> pd.DataFrame:
 
-    df = df.merge(clientes_df[["id_cliente"]], on="id_cliente", how="inner")
+    df = df.merge(clientes_df[["id_cliente"]].drop_duplicates(), on="id_cliente", how="inner")
     df = df.reset_index(drop=True)
 
     # adicionar uma data de faturamento fake para pedidos sem faturamento
@@ -83,6 +83,7 @@ def spine_labeling(df: pd.DataFrame) -> pd.DataFrame:
     df = pd.concat([df1, df2])
 
     df = df.drop(columns=["data_pedido", "data_faturamento"])
+    df = df.drop_duplicates()
     assert df.isnull().sum().sum() == 0, "Spine tem nulo, revisar"
 
     return df

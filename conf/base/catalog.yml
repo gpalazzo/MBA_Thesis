@@ -57,3 +57,9 @@ prm_analise_fin:
 fte_analise_fin:
   type: pandas.ParquetDataSet
   filepath: "data/04_feature/analise_fin_fte.parquet"
+
+# -----------------------------------------
+
+master_table:
+  type: pandas.ParquetDataSet
+  filepath: "data/05_model_input/master_table.parquet"

@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
 from typing import Dict
 
+import numpy as np
 import pandas as pd
 
-from itaete_buy_prop.utils import col_string_normalizer, string_normalizer
+from itaete_buy_prop.utils import (
+    col_string_normalizer,
+    input_null_values,
+    string_normalizer,
+)
 
 
 def origem_receita_frota_prm(df: pd.DataFrame, params: Dict[str, str]) -> pd.DataFrame:
@@ -34,13 +39,34 @@ def origem_receita_frota_prm(df: pd.DataFrame, params: Dict[str, str]) -> pd.Dat
     return df
 
 
-def origem_receita_frota_fte(df: pd.DataFrame) -> pd.DataFrame:
+def origem_receita_frota_fte(df: pd.DataFrame, spine: pd.DataFrame) -> pd.DataFrame:
 
-    df = df.groupby(["id_cliente", "ref_date"])["area_ha"] \
-        .sum() \
-        .reset_index() \
-        .rename(columns={"area_ha": "area_ha_somadas"})
+    # ajuste para a função de input de nulos funcionar
+    df = df.replace({np.nan: None})
+    df = input_null_values(df=df, input_strategy="most_frequent")
 
-    assert df.isnull().sum().sum() == 0, "Nulos na feature, revisar"
+    fte_df = pd.DataFrame()
 
-    return df
+    for cliente, data_inferior, data_alvo in zip(spine["id_cliente"], spine["data_inferior"], spine["data_faturamento_nova"]):
+
+        dfaux = df[(df["id_cliente"] == cliente) & \
+                    (df["ref_date"].between(data_inferior, data_alvo))]
+
+        # se dataframe não tiver dado para o cliente na janela, então ignora o código abaixo
+        if dfaux.empty:
+            continue
+
+        else:
+            df_grp = dfaux.groupby(["id_cliente", "ref_date"])["area_ha"] \
+                        .sum() \
+                        .reset_index() \
+                        .rename(columns={"area_ha": "area_ha_somadas"})
+
+            df_grp = df_grp.drop(columns=["ref_date"])
+            df_grp.loc[:, ["data_inferior", "data_alvo"]] = [data_inferior, data_alvo]
+
+            fte_df = pd.concat([fte_df, df_grp])
+
+    assert fte_df.isnull().sum().sum() == 0, "Nulos na feature, revisar"
+
+    return fte_df
