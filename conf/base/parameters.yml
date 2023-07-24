@@ -19,3 +19,9 @@ master_table_params:
     stratify: true #bool: true or false
 
   target_col: "label" #nome da coluna target
+
+  # limites inferir e superior para balancear as classes
+  # se estiver fora do range, então está desbalanceado
+  class_bounds:
+    lower: 0.45 #percent
+    upper: 0.55 #percent

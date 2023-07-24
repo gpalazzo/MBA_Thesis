@@ -63,21 +63,37 @@ fte_analise_fin:
 master_table:
   type: pandas.ParquetDataSet
   filepath: "data/05_model_input/master_table.parquet"
+  save_args:
+    index: True
+
+master_table_balanceada:
+  type: pandas.ParquetDataSet
+  filepath: "data/05_model_input/master_table_balanceada.parquet"
+  save_args:
+    index: True
 
 master_table_treino_ftes:
   type: pandas.ParquetDataSet
   filepath: "data/05_model_input/master_table_treino_ftes.parquet"
+  save_args:
+    index: True
 
 master_table_treino_tgt:
   type: pandas.ParquetDataSet
   filepath: "data/05_model_input/master_table_treino_tgt.parquet"
+  save_args:
+    index: True
 
 master_table_teste_ftes:
   type: pandas.ParquetDataSet
   filepath: "data/05_model_input/master_table_teste_ftes.parquet"
+  save_args:
+    index: True
 
 master_table_teste_tgt:
   type: pandas.ParquetDataSet
   filepath: "data/05_model_input/master_table_teste_tgt.parquet"
+  save_args:
+    index: True
 
 # -----------------------------------------

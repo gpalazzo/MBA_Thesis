@@ -43,7 +43,7 @@ addopts = """
 [tool.poetry.dependencies]
 python = "3.10.12"
 kedro = {extras = ["pandas"], version = "0.18.1"}
-scikit-learn = "^1.0.2"
+scikit-learn = "==1.2.*"
 aiohttp = "^3.8.3"
 ipython = "8.12.*"
 imbalanced-learn = "^0.10.1"
