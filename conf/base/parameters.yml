@@ -10,3 +10,12 @@ spine_params:
 
 clientes_params:
   cultura: "laranja"
+
+master_table_params:
+  treino_teste_split:
+    shuffle: true #bool: true or false
+    train_size: 0.7
+    random_state: 42
+    stratify: true #bool: true or false
+
+  target_col: "label" #nome da coluna target

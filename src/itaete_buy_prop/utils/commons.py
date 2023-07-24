@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 import re
 import unicodedata
-from typing import List
+from typing import Any, Dict, List
 
 import numpy as np
 import pandas as pd
 from sklearn.impute import SimpleImputer
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import GridSearchCV, RepeatedStratifiedKFold
 
 
 def string_normalizer(_str) -> str:
@@ -118,3 +120,25 @@ def null_handler(df: pd.DataFrame,
     assert df_filled.isnull().sum().sum() == 0, "Nulos mesmo após aplicar null handler, revisar"
 
     return df_filled
+
+
+def optimize_params(model: LogisticRegression,
+                    grid: Dict[str, Any],
+                    X_train: pd.DataFrame,
+                    y_train: pd.DataFrame,
+                    n_splits: int,
+                    n_repeats: int,
+                    random_state: int = 1,
+                    grid_search_scoring: str = "accuracy") -> Dict[str, str]:
+
+    cv = RepeatedStratifiedKFold(n_splits=n_splits, n_repeats=n_repeats, random_state=random_state)
+    grid_search = GridSearchCV(estimator=model,
+                                param_grid=grid,
+                                n_jobs=-1,
+                                cv=cv,
+                                scoring=grid_search_scoring,
+                                error_score=0)
+
+    grid_result = grid_search.fit(X_train, y_train)
+
+    return grid_result

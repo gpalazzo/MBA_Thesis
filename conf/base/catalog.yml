@@ -14,7 +14,7 @@ preprocessing_spine:
 
 label_spine:
   type: pandas.ParquetDataSet
-  filepath: "data/05_model_input/spine_label.parquet"
+  filepath: "data/04_feature/spine_label.parquet"
 
 # -----------------------------------------
 
@@ -63,3 +63,21 @@ fte_analise_fin:
 master_table:
   type: pandas.ParquetDataSet
   filepath: "data/05_model_input/master_table.parquet"
+
+master_table_treino_ftes:
+  type: pandas.ParquetDataSet
+  filepath: "data/05_model_input/master_table_treino_ftes.parquet"
+
+master_table_treino_tgt:
+  type: pandas.ParquetDataSet
+  filepath: "data/05_model_input/master_table_treino_tgt.parquet"
+
+master_table_teste_ftes:
+  type: pandas.ParquetDataSet
+  filepath: "data/05_model_input/master_table_teste_ftes.parquet"
+
+master_table_teste_tgt:
+  type: pandas.ParquetDataSet
+  filepath: "data/05_model_input/master_table_teste_tgt.parquet"
+
+# -----------------------------------------
