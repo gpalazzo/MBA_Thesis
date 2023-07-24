@@ -25,3 +25,6 @@ master_table_params:
   class_bounds:
     lower: 0.45 #percent
     upper: 0.55 #percent
+
+  vif_limite: 10 #valor limite para o vif
+  slc_topN_features: 20 #quantidade de features a serem selecionadas

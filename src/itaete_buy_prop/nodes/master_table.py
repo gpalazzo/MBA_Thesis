@@ -5,7 +5,9 @@ from typing import Any, Dict, Tuple
 
 import pandas as pd
 from imblearn.under_sampling import NearMiss
+from sklearn.feature_selection import SelectKBest, mutual_info_classif
 from sklearn.model_selection import train_test_split
+from statsmodels.stats.outliers_influence import variance_inflation_factor as vif
 
 logger = logging.getLogger(__name__)
 BASE_JOIN_COLS = ["data_alvo", "data_inferior"]
@@ -78,6 +80,60 @@ def mt_balanceia_classes(df: pd.DataFrame,
     df = df.set_index(BASE_JOIN_COLS)
 
     return df
+
+
+def mt_remove_ftes_multic(df: pd.DataFrame,
+                        params: Dict[str, Any]) -> pd.DataFrame:
+
+    target_col = params["target_col"]
+    valor_vif = params["vif_limite"]
+
+    df_ftes_aux = df.drop(columns=[target_col]).copy()
+    df_ftes_aux = df_ftes_aux.dropna()
+
+    df_ftes_aux.loc[:, "const"] = 1 #VIF requires a constant col
+
+    _vif = pd.DataFrame()
+    _vif.loc[:, "features"] = df_ftes_aux.columns.copy()
+    _vif.loc[:, "vif"] = [vif(df_ftes_aux.values, i) for i in range(df_ftes_aux.shape[1])]
+
+    _vif = _vif[_vif["features"] != "const"] #drop constant col
+
+    # get symbols below threshold
+    slct_symbols = _vif[_vif["vif"] <= valor_vif]["features"].tolist()
+    df = df[slct_symbols + [target_col]]
+
+    return df, _vif
+
+
+def mt_seleciona_features(X_train: pd.DataFrame,
+                        y_train: pd.DataFrame,
+                        X_test: pd.DataFrame,
+                        params: Dict[str, Any]) -> Tuple[pd.DataFrame,
+                                                         pd.DataFrame,
+                                                         pd.DataFrame]:
+
+    topN_features = params["slc_topN_features"]
+
+    if X_train.shape[1] < topN_features:
+        k = "all"
+    else:
+        k = topN_features
+
+    selector = SelectKBest(mutual_info_classif, k=k)
+    selector.fit_transform(X_train, y_train)
+    slct_cols_idx = selector.get_support(indices=True)
+
+    # cria dataframe com as importâncias das features
+    fte_imps = {}
+    for feature, score in zip(selector.feature_names_in_, selector.scores_):
+        fte_imps[feature] = score
+    df_fte_imps = pd.DataFrame({"features": fte_imps.keys(), "score": fte_imps.values()})
+
+    slct_cols = X_train.iloc[:, slct_cols_idx].columns.tolist()
+    X_train, X_test = X_train[slct_cols], X_test[slct_cols]
+
+    return X_train, X_test, df_fte_imps
 
 
 def _balance_classes(X: pd.DataFrame, y: pd.DataFrame) -> pd.DataFrame:
