@@ -6,6 +6,7 @@ from kedro.pipeline import Pipeline, pipeline
 
 from itaete_buy_prop.pipelines import (
     analise_fin_pipeline,
+    logreg_pipeline,
     master_table_pipeline,
     origem_receita_frota_pipeline,
     quali_clientes_pipeline,
@@ -23,4 +24,5 @@ def register_pipelines() -> Dict[str, Pipeline]:
                                      quali_clientes_pipeline() +
                                      origem_receita_frota_pipeline() +
                                      analise_fin_pipeline() +
-                                     master_table_pipeline()])}
+                                     master_table_pipeline() +
+                                     logreg_pipeline()])}

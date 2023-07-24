@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from .analise_fin import analise_fin_fte, analise_fin_prm
-from .logreg import logreg_model_fit
+from .logreg import logreg_model_fit, logreg_model_predict, logreg_model_relatorio
 from .master_table import (
     cria_master_table,
     mt_balanceia_classes,

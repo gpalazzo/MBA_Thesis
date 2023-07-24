@@ -28,3 +28,20 @@ master_table_params:
 
   vif_limite: 10 #valor limite para o vif
   slc_topN_features: 20 #quantidade de features a serem selecionadas
+
+# se `model_params_otimizar` é true, então os parâmetros serão otimizados em run time
+logreg_params:
+  model_params_otimizar: false
+  # utilizar esses parâmetros independentemente de otimização
+  model_params_padrao:
+    n_jobs: -1
+  # se `optimize_params` é false, então usa esses parâmetros
+  model_params_extra:
+    solver: "saga"
+    penalty: "elasticnet"
+    tol: 0.001
+    C: 1.0
+    max_iter: 200
+    fit_intercept: true
+    class_weight: "balanced"
+    l1_ratio: 0.1
