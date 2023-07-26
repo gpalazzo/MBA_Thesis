@@ -1,14 +1,9 @@
 # -*- coding: utf-8 -*-
 from typing import Dict
 
-import numpy as np
 import pandas as pd
 
-from itaete_buy_prop.utils import (
-    col_string_normalizer,
-    input_null_values,
-    string_normalizer,
-)
+from itaete_buy_prop.utils import col_string_normalizer, string_normalizer
 
 BASE_JOIN_COLS = ["id_cliente", "data_alvo", "data_inferior"]
 
@@ -43,10 +38,9 @@ def origem_receita_frota_prm(df: pd.DataFrame, params: Dict[str, str]) -> pd.Dat
 
 def origem_receita_frota_fte(df: pd.DataFrame, spine: pd.DataFrame) -> pd.DataFrame:
 
-    # ajuste para a função de input de nulos funcionar
-    df = df.replace({np.nan: None})
-    df = input_null_values(df=df, input_strategy="most_frequent")
-
+    # como depois eu agrego a área somando, o que faz mais sentido para os nulos é serem 0
+    # caso contrário, vai inflacionar a quantidade de área da pessoa
+    df = df.fillna(0)
     fte_df = pd.DataFrame()
 
     for cliente, data_inferior, data_alvo in zip(spine["id_cliente"], spine["data_inferior"], spine["data_faturamento_nova"]):
