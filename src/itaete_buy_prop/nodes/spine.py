@@ -5,6 +5,8 @@ from typing import Dict
 import numpy as np
 import pandas as pd
 
+BASE_JOIN_COLS = ["data_faturamento_nova", "data_inferior"]
+
 
 def spine_prm(df: pd.DataFrame) -> pd.DataFrame:
 
@@ -29,19 +31,7 @@ def spine_preprocessing(df: pd.DataFrame, clientes_df: pd.DataFrame, params: Dic
     df = df.reset_index(drop=True)
 
     # adicionar uma data de faturamento fake para pedidos sem faturamento
-    lower_bound_date_pedido = datetime.now().date() - timedelta(days=params["qtd_dias_lookback_pedidos"])
-    dfaux = df[df["data_pedido"] >= lower_bound_date_pedido]
-    diff_days = (dfaux["data_faturamento"] - dfaux["data_pedido"]).dt.days
-    diff_days = diff_days.dropna()
-    median_days = np.median(diff_days)
-
-    df1 = df[(df["data_pedido"].notnull()) & (df["data_faturamento"].isnull())]
-    df1.loc[:, "data_faturamento_nova"] = df["data_pedido"] + timedelta(days=median_days)
-
-    df = df.drop(df1.index)
-    df.loc[:, "data_faturamento_nova"] = df["data_faturamento"].copy()
-    df = pd.concat([df, df1])
-    # fim
+    df = _add_fake_data_fatrm(df=df, params=params)
 
     df.loc[:, "data_inferior"] = df["data_faturamento_nova"].apply(lambda row: row \
                                                             if pd.isnull(row) \
@@ -51,22 +41,9 @@ def spine_preprocessing(df: pd.DataFrame, clientes_df: pd.DataFrame, params: Dic
                                                             else row + timedelta(days=params["dt_fat_lookforward_window"]))
 
     # ajuste para considerar apenas os itens em que a data do pedido é maior em, no máximo, 30 dias da data do faturamento
-    df = df.reset_index(drop=True)
-    df1 = df[df["data_pedido"].isnull()]
-    df2 = df.drop(df1.index)
-    df2 = df2[df2["data_faturamento"].isnull()]
-
-    df_nulls = pd.concat([df1, df2])
-
-    df3 = df.drop(df_nulls.index)
-    df3.loc[:, "data_faturamento_aux"] = df3["data_faturamento"] + timedelta(days=params["dt_fat_pedido_diffdays"])
-    df3 = df3[df3["data_faturamento_aux"] >= df3["data_pedido"]]
-
-    df_final = pd.concat([df_nulls, df3])
-    # fim do ajuste de data do pedido
+    df_final = _ajusta_data_fatrm_menor_pedido(df=df, params=params)
 
     df_final = df_final.drop(columns=["data_faturamento_aux"])
-
     return df_final
 
 
@@ -84,6 +61,44 @@ def spine_labeling(df: pd.DataFrame) -> pd.DataFrame:
 
     df = df.drop(columns=["data_pedido", "data_faturamento"])
     df = df.drop_duplicates()
+
+    assert df.shape[0] == df[["id_cliente"] + BASE_JOIN_COLS].drop_duplicates().shape[0], "Spine duplicada, revisar"
     assert df.isnull().sum().sum() == 0, "Spine tem nulo, revisar"
 
     return df
+
+
+def _add_fake_data_fatrm(df: pd.DataFrame, params: Dict[str, int]) -> pd.DataFrame:
+
+    lower_bound_date_pedido = datetime.now().date() - timedelta(days=params["qtd_dias_lookback_pedidos"])
+    dfaux = df[df["data_pedido"] >= lower_bound_date_pedido]
+    diff_days = (dfaux["data_faturamento"] - dfaux["data_pedido"]).dt.days
+    diff_days = diff_days.dropna()
+    median_days = np.median(diff_days)
+
+    df1 = df[(df["data_pedido"].notnull()) & (df["data_faturamento"].isnull())]
+    df1.loc[:, "data_faturamento_nova"] = df["data_pedido"] + timedelta(days=median_days)
+
+    df = df.drop(df1.index)
+    df.loc[:, "data_faturamento_nova"] = df["data_faturamento"].copy()
+    df = pd.concat([df, df1])
+
+    return df
+
+
+def _ajusta_data_fatrm_menor_pedido(df: pd.DataFrame, params: Dict[str, int]) -> pd.DataFrame:
+
+    df = df.reset_index(drop=True)
+    df1 = df[df["data_pedido"].isnull()]
+    df2 = df.drop(df1.index)
+    df2 = df2[df2["data_faturamento"].isnull()]
+
+    df_nulls = pd.concat([df1, df2])
+
+    df3 = df.drop(df_nulls.index)
+    df3.loc[:, "data_faturamento_aux"] = df3["data_faturamento"] + timedelta(days=params["dt_fat_pedido_diffdays"])
+    df3 = df3[df3["data_faturamento_aux"] >= df3["data_pedido"]]
+
+    df_final = pd.concat([df_nulls, df3])
+
+    return df_final
