@@ -9,7 +9,7 @@ from itaete_buy_prop.pipelines import (
     logreg_pipeline,
     master_table_pipeline,
     origem_receita_frota_pipeline,
-    quali_clientes_pipeline,
+    quali_clientes_crm_pipeline,
     spine_pipeline,
 )
 
@@ -21,7 +21,7 @@ def register_pipelines() -> Dict[str, Pipeline]:
         A mapping from a pipeline name to a ``Pipeline`` object.
     """
     return {"__default__": pipeline([spine_pipeline() +
-                                     quali_clientes_pipeline() +
+                                     quali_clientes_crm_pipeline() +
                                      origem_receita_frota_pipeline() +
                                      analise_fin_pipeline() +
                                      master_table_pipeline() +

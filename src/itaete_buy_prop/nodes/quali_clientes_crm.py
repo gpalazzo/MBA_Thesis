@@ -10,7 +10,7 @@ from itaete_buy_prop.utils import (
 BASE_JOIN_COLS = ["id_cliente", "ref_date"]
 
 
-def quali_clientes_prm(df: pd.DataFrame, clientes_df: pd.DataFrame) -> pd.DataFrame:
+def quali_clientes_crm_prm(df: pd.DataFrame, clientes_df: pd.DataFrame) -> pd.DataFrame:
     """essa função está pegando a data de outra aba do excel. isso é uma proxy, validar se faz
     sentido (apesar de não ser um processo ideal)
     """
@@ -33,7 +33,7 @@ def quali_clientes_prm(df: pd.DataFrame, clientes_df: pd.DataFrame) -> pd.DataFr
     return df
 
 
-def quali_clientes_fte(df: pd.DataFrame) -> pd.DataFrame:
+def quali_clientes_crm_fte(df: pd.DataFrame) -> pd.DataFrame:
 
     _cols = ["fj", "sts"]
     df = build_dummies(df=df, categ_cols=_cols)
