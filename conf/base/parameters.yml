@@ -1,7 +1,7 @@
 spine_params:
   # quantidade de dias para considerar os dados de mercado olhando para trás e para frente (projeção) a partir do faturamento
-  dt_fat_lookback_window: 730 #2 anos (2*365)
-  dt_fat_lookforward_window: 365 #1 ano (1*365)
+  dt_fat_lookback_window: 180 #exemplo: 2 anos (2*365)
+  dt_fat_lookforward_window: 365 #exemplo: 1 ano (1*365)
   #diferença de dias permitido entre data do pedido e do faturamento, sendo pedido > faturamento
   dt_fat_pedido_diffdays: 30
   # quantidades de dias para considerar os pedidos no cálculo da mediana
