@@ -10,6 +10,8 @@ from itaete_buy_prop.utils import (
     string_normalizer,
 )
 
+BASE_JOIN_COLS = ["id_cliente", "data_alvo", "data_inferior"]
+
 
 def origem_receita_frota_prm(df: pd.DataFrame, params: Dict[str, str]) -> pd.DataFrame:
 
@@ -68,5 +70,7 @@ def origem_receita_frota_fte(df: pd.DataFrame, spine: pd.DataFrame) -> pd.DataFr
             fte_df = pd.concat([fte_df, df_grp])
 
     assert fte_df.isnull().sum().sum() == 0, "Nulos na feature, revisar"
+    assert fte_df.shape[0] == fte_df[BASE_JOIN_COLS].drop_duplicates().shape[0], \
+        "Feature origem_receita_frota duplicada, revisar"
 
     return fte_df

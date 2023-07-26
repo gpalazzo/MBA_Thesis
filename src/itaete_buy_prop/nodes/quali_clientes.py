@@ -7,6 +7,8 @@ from itaete_buy_prop.utils import (
     string_normalizer,
 )
 
+BASE_JOIN_COLS = ["id_cliente", "ref_date"]
+
 
 def quali_clientes_prm(df: pd.DataFrame, clientes_df: pd.DataFrame) -> pd.DataFrame:
     """essa função está pegando a data de outra aba do excel. isso é uma proxy, validar se faz
@@ -35,7 +37,10 @@ def quali_clientes_fte(df: pd.DataFrame) -> pd.DataFrame:
 
     _cols = ["fj", "sts"]
     df = build_dummies(df=df, categ_cols=_cols)
+    df = df.drop_duplicates()
 
     assert df.isnull().sum().sum() == 0, "Nulos na feature, revisar"
+    assert df.shape[0] == df[BASE_JOIN_COLS].drop_duplicates().shape[0], \
+            "Feature quali_clientes duplicada, revisar"
 
     return df

@@ -5,7 +5,7 @@ from typing import Dict
 import numpy as np
 import pandas as pd
 
-BASE_JOIN_COLS = ["data_faturamento_nova", "data_inferior"]
+BASE_JOIN_COLS = ["id_cliente", "data_faturamento_nova", "data_inferior"]
 
 
 def spine_prm(df: pd.DataFrame) -> pd.DataFrame:
@@ -62,7 +62,7 @@ def spine_labeling(df: pd.DataFrame) -> pd.DataFrame:
     df = df.drop(columns=["data_pedido", "data_faturamento"])
     df = df.drop_duplicates()
 
-    assert df.shape[0] == df[["id_cliente"] + BASE_JOIN_COLS].drop_duplicates().shape[0], "Spine duplicada, revisar"
+    assert df.shape[0] == df[BASE_JOIN_COLS].drop_duplicates().shape[0], "Spine duplicada, revisar"
     assert df.isnull().sum().sum() == 0, "Spine tem nulo, revisar"
 
     return df
