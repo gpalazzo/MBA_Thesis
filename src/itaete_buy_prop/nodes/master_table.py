@@ -13,7 +13,9 @@ logger = logging.getLogger(__name__)
 BASE_JOIN_COLS = ["data_alvo", "data_inferior"]
 
 
-def cria_master_table(spine: pd.DataFrame, *args: Tuple[pd.DataFrame]) -> pd.DataFrame:
+def cria_master_table(spine: pd.DataFrame,
+                      params: Dict[str, Any],
+                      *args: Tuple[pd.DataFrame]) -> pd.DataFrame:
 
     spine = spine[["id_cliente", "data_faturamento_nova", "data_inferior", "label"]] \
                 .rename(columns={"data_faturamento_nova": "data_alvo"})
@@ -26,6 +28,11 @@ def cria_master_table(spine: pd.DataFrame, *args: Tuple[pd.DataFrame]) -> pd.Dat
 
     min_rows = min([df.shape[0] for df in ALL_DFS])
     assert mt_df.shape[0] == min_rows, "Número de linhas errado na master table, revisar"
+
+    target_col = params["target_col"]
+    TARGET_MAPPER = {"nao_compra": 0,
+                     "compra": 1}
+    mt_df.loc[:, target_col] = mt_df[target_col].map(TARGET_MAPPER)
 
     return mt_df
 
