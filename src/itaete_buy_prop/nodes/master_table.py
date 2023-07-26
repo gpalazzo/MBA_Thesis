@@ -10,7 +10,7 @@ from sklearn.model_selection import train_test_split
 from statsmodels.stats.outliers_influence import variance_inflation_factor as vif
 
 logger = logging.getLogger(__name__)
-BASE_JOIN_COLS = ["data_alvo", "data_inferior"]
+BASE_JOIN_COLS = ["id_cliente", "data_alvo", "data_inferior"]
 
 
 def cria_master_table(spine: pd.DataFrame,
@@ -21,18 +21,19 @@ def cria_master_table(spine: pd.DataFrame,
                 .rename(columns={"data_faturamento_nova": "data_alvo"})
 
     ALL_DFS = [spine] + list(args)
-    JOIN_COLS = ["id_cliente"] + BASE_JOIN_COLS
-    mt_df = reduce(lambda left, right: pd.merge(left, right, on=JOIN_COLS, how="inner"), ALL_DFS)
-
-    mt_df = mt_df.drop(columns=["id_cliente"]).set_index(BASE_JOIN_COLS)
-
-    min_rows = min([df.shape[0] for df in ALL_DFS])
-    assert mt_df.shape[0] == min_rows, "Número de linhas errado na master table, revisar"
+    mt_df = reduce(lambda left, right: pd.merge(left, right, on=BASE_JOIN_COLS, how="inner"), ALL_DFS)
 
     target_col = params["target_col"]
     TARGET_MAPPER = {"nao_compra": 0,
                      "compra": 1}
     mt_df.loc[:, target_col] = mt_df[target_col].map(TARGET_MAPPER)
+
+    min_rows = min([df.shape[0] for df in ALL_DFS])
+    assert mt_df.shape[0] == min_rows, "Número de linhas errado na master table, revisar"
+    assert mt_df.shape[0] == mt_df[BASE_JOIN_COLS].drop_duplicates().shape[0], \
+        "Master table duplicada, revisar"
+
+    mt_df = mt_df.set_index(BASE_JOIN_COLS)
 
     return mt_df
 
