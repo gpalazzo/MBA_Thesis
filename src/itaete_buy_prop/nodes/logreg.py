@@ -42,8 +42,6 @@ def logreg_model_fit(X_train: pd.DataFrame,
     model.set_params(**params_opt)
     model.fit(X_train, y_train)
 
-    # df_params_opt = pd.DataFrame(params_opt, index=[0])
-
     return model
 
 
