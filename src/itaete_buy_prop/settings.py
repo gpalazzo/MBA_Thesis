@@ -36,3 +36,8 @@ https://kedro.readthedocs.io/en/stable/kedro_project_setup/settings.html."""
 # Class that manages the Data Catalog.
 # from kedro.io import DataCatalog
 # DATA_CATALOG_CLASS = DataCatalog
+
+# nome dos datasets para considerar na master table como feature
+# isso é importante porque nem todos os datasets são orientados por data, então isso acaba penalizando
+# a quantidade de dados final na master table
+MASTER_TABLE_DATASETS = ["fte_analise_fin"]
