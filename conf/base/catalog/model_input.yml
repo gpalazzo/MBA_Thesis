@@ -1,0 +1,61 @@
+master_table:
+  type: pandas.ParquetDataSet
+  filepath: "data/05_model_input/master_table.parquet"
+  save_args:
+    index: True
+
+master_table_balanceada:
+  type: pandas.ParquetDataSet
+  filepath: "data/05_model_input/master_table_balanceada.parquet"
+  save_args:
+    index: True
+
+master_table_remove_ftes_multic:
+  type: pandas.ParquetDataSet
+  filepath: "data/05_model_input/master_table_remove_ftes_multic.parquet"
+  save_args:
+    index: True
+
+master_table_multic_vif_values:
+  type: pandas.ParquetDataSet
+  filepath: "data/05_model_input/master_table_multic_vif_values.parquet"
+
+master_table_treino_ftes:
+  type: pandas.ParquetDataSet
+  filepath: "data/05_model_input/master_table_treino_ftes.parquet"
+  save_args:
+    index: True
+
+master_table_treino_ftes_tmp:
+  type: pandas.ParquetDataSet
+  filepath: "data/05_model_input/master_table_treino_ftes_tmp.parquet"
+  save_args:
+    index: True
+
+master_table_treino_tgt:
+  type: pandas.ParquetDataSet
+  filepath: "data/05_model_input/master_table_treino_tgt.parquet"
+  save_args:
+    index: True
+
+master_table_teste_ftes:
+  type: pandas.ParquetDataSet
+  filepath: "data/05_model_input/master_table_teste_ftes.parquet"
+  save_args:
+    index: True
+
+master_table_teste_ftes_tmp:
+  type: pandas.ParquetDataSet
+  filepath: "data/05_model_input/master_table_teste_ftes_tmp.parquet"
+  save_args:
+    index: True
+
+master_table_teste_tgt:
+  type: pandas.ParquetDataSet
+  filepath: "data/05_model_input/master_table_teste_tgt.parquet"
+  save_args:
+    index: True
+
+master_table_fte_slc_importancias:
+  type: pandas.ParquetDataSet
+  filepath: "data/05_model_input/master_table_fte_slc_importancias.parquet"

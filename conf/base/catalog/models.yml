@@ -1,0 +1,4 @@
+logreg_fitted_model:
+  type: pickle.PickleDataSet
+  filepath: data/06_models/logreg_fitted_model.pkl
+  backend: pickle

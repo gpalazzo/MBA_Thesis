@@ -1,0 +1,23 @@
+raw_crm_bi_analise_financeira:
+  type: pandas.ExcelDataSet
+  filepath: "data/01_raw/Dados CRM e BI - TCC - Atualizado.xlsx"
+  load_args:
+    sheet_name: "Análise Fin - BI"
+
+raw_crm_bi_quali_clientes:
+  type: pandas.ExcelDataSet
+  filepath: "data/01_raw/Dados CRM e BI - TCC - Atualizado.xlsx"
+  load_args:
+    sheet_name: "Qualificação Clientes - CRM"
+
+raw_crm_bi_origem_receita_frota:
+  type: pandas.ExcelDataSet
+  filepath: "data/01_raw/Dados CRM e BI - TCC - Atualizado.xlsx"
+  load_args:
+    sheet_name: "Origem de Receita e Frota - CRM"
+
+raw_usdbrl_fx:
+  type: pandas.ExcelDataSet
+  filepath: "data/01_raw/cambio_dolar_real.xlsx"
+  load_args:
+    sheet_name: "valores_final"
