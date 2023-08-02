@@ -34,37 +34,3 @@ def origem_receita_frota_prm(df: pd.DataFrame, params: Dict[str, str]) -> pd.Dat
     assert df[["id_cliente", "ref_date"]].isnull().sum().sum() == 0, "Nulos no primary, revisar"
 
     return df
-
-
-def origem_receita_frota_fte(df: pd.DataFrame, spine: pd.DataFrame) -> pd.DataFrame:
-
-    # como depois eu agrego a área somando, o que faz mais sentido para os nulos é serem 0
-    # caso contrário, vai inflacionar a quantidade de área da pessoa
-    df = df.fillna(0)
-    fte_df = pd.DataFrame()
-
-    for cliente, data_inferior, data_alvo in zip(spine["id_cliente"], spine["data_inferior"], spine["data_faturamento_nova"]):
-
-        dfaux = df[(df["id_cliente"] == cliente) & \
-                    (df["ref_date"].between(data_inferior, data_alvo))]
-
-        # se dataframe não tiver dado para o cliente na janela, então ignora o código abaixo
-        if dfaux.empty:
-            continue
-
-        else:
-            df_grp = dfaux.groupby(["id_cliente", "ref_date"])["area_ha"] \
-                        .sum() \
-                        .reset_index() \
-                        .rename(columns={"area_ha": "area_ha_somadas"})
-
-            df_grp = df_grp.drop(columns=["ref_date"])
-            df_grp.loc[:, ["data_inferior", "data_alvo"]] = [data_inferior, data_alvo]
-
-            fte_df = pd.concat([fte_df, df_grp])
-
-    assert fte_df.isnull().sum().sum() == 0, "Nulos na feature, revisar"
-    assert fte_df.shape[0] == fte_df[BASE_JOIN_COLS].drop_duplicates().shape[0], \
-        "Feature origem_receita_frota duplicada, revisar"
-
-    return fte_df
