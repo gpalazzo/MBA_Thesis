@@ -1,0 +1,17 @@
+master_table_params:
+  treino_teste_split:
+    shuffle: true #bool: true or false
+    train_size: 0.7
+    random_state: 42
+    stratify: true #bool: true or false
+
+  target_col: "label" #nome da coluna target
+
+  # limites inferir e superior para balancear as classes
+  # se estiver fora do range, então está desbalanceado
+  class_bounds:
+    lower: 0.45 #percent
+    upper: 0.55 #percent
+
+  vif_limite: 10 #valor limite para o vif
+  slc_topN_features: 20 #quantidade de features a serem selecionadas

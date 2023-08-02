@@ -22,8 +22,15 @@
     - coloquei data em amarelo na planilha, o que ela significa?
 
 6. Área de Produção de Laranja por Cliente - Itaeté Jales
-    - coluna "SEQUENCIAL" é o SeqPessoa da base de dados?
+    - coluna "SEQUENCIAL" é o SeqPessoa da base de dados? SIM!
     - qual a diferença desse dado de área para os dados na planilha de CRM e BI na aba "Origem de Receita e Frota - CRM" coluna "O"?
+    * usar o dessa planilha e não da Origem de Receita e Frota - CRM
 
 7. Faturamento Citrus Jales
     - qual a diferença disso para os dados da planilha de CRM e BI da aba "Análise Fin - BI" na coluna "U"?
+    - usar a "Análise Fin - BI" ao invés dessa
+
+8. Planilha "Frota Clientes - Itaeté Jales"
+    - pode considerar que o ano do trator é o ano que adquiriu
+    - SEQUENCIAL é o SeqPessoa
+    - features: quantidade tratores, idade média da frota, ...

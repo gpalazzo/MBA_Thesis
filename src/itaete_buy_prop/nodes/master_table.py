@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 from functools import reduce
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, List, Tuple
 
 import pandas as pd
 from imblearn.under_sampling import NearMiss
@@ -10,32 +10,54 @@ from sklearn.model_selection import train_test_split
 from statsmodels.stats.outliers_influence import variance_inflation_factor as vif
 
 logger = logging.getLogger(__name__)
-BASE_JOIN_COLS = ["id_cliente", "data_alvo", "data_inferior"]
+CLIENTE_COL = "id_cliente"
+CLIENTE_BASE_JOIN_COLS = [CLIENTE_COL] + ["data_alvo", "data_inferior"]
+DATE_BASE_JOIN_COLS = ["data_alvo", "data_inferior"]
 
 
 def cria_master_table(spine: pd.DataFrame,
                       params: Dict[str, Any],
                       *args: Tuple[pd.DataFrame]) -> pd.DataFrame:
 
+    cliente_args, date_args = _split_dataset_levels(args)
+
     spine = spine[["id_cliente", "data_faturamento_nova", "data_inferior", "label"]] \
                 .rename(columns={"data_faturamento_nova": "data_alvo"})
 
-    ALL_DFS = [spine] + list(args)
-    mt_df = reduce(lambda left, right: pd.merge(left, right, on=BASE_JOIN_COLS, how="inner"), ALL_DFS)
+    # join de todos os dados em diferentes níveis de agregação
+    # o 1o join é a nível de cliente, logo é o mais granular. então o 2o join não pode ter mais linhas que esse primeiro
+    ALL_CLIENTE_DFS = [spine] + cliente_args
+    mt_df = reduce(lambda left, right: pd.merge(left, right, on=CLIENTE_BASE_JOIN_COLS, how="inner"), ALL_CLIENTE_DFS)
+    # 2o join a nível somente de datas
+    ALL_DATE_DFS = [mt_df] + date_args
+    mt_df_all = reduce(lambda left, right: pd.merge(left, right, on=DATE_BASE_JOIN_COLS, how="inner"), ALL_DATE_DFS)
+    assert mt_df_all.shape[0] <= mt_df.shape[0], "Duplicou linhas na master table, revisar"
 
     target_col = params["target_col"]
     TARGET_MAPPER = {"nao_compra": 0,
                      "compra": 1}
-    mt_df.loc[:, target_col] = mt_df[target_col].map(TARGET_MAPPER)
+    mt_df_all.loc[:, target_col] = mt_df_all[target_col].map(TARGET_MAPPER)
 
-    min_rows = min([df.shape[0] for df in ALL_DFS])
-    assert mt_df.shape[0] == min_rows, "Número de linhas errado na master table, revisar"
-    assert mt_df.shape[0] == mt_df[BASE_JOIN_COLS].drop_duplicates().shape[0], \
+    assert mt_df_all.shape[0] == mt_df_all[CLIENTE_BASE_JOIN_COLS].drop_duplicates().shape[0], \
         "Master table duplicada, revisar"
 
-    mt_df = mt_df.set_index(BASE_JOIN_COLS)
+    mt_df_all = mt_df_all.set_index(CLIENTE_BASE_JOIN_COLS)
 
-    return mt_df
+    return mt_df_all
+
+
+def _split_dataset_levels(args: List[pd.DataFrame]) -> Tuple[pd.DataFrame, pd.DataFrame]:
+
+    cliente_dfs = []
+    date_dfs = []
+
+    for df in args:
+        if CLIENTE_COL in df.columns:
+            cliente_dfs.append(df)
+        else:
+            date_dfs.append(df)
+
+    return cliente_dfs, date_dfs
 
 
 def mt_split_treino_teste(master_table: pd.DataFrame,
@@ -85,7 +107,7 @@ def mt_balanceia_classes(df: pd.DataFrame,
     else:
         logger.info("Class are balanced, skipping balancing method")
 
-    df = df.set_index(BASE_JOIN_COLS)
+    df = df.set_index(CLIENTE_BASE_JOIN_COLS)
 
     return df
 
@@ -174,7 +196,7 @@ def _cria_fake_index(X: pd.DataFrame, y: pd.DataFrame) -> Tuple[pd.DataFrame,
     y = y.set_index(FAKE_IDX_NAME, append=True)
 
     lookup_idx_times = y.reset_index() \
-                        [BASE_JOIN_COLS + [FAKE_IDX_NAME]] \
+                        [CLIENTE_BASE_JOIN_COLS + [FAKE_IDX_NAME]] \
                         .set_index(FAKE_IDX_NAME)
 
     return X, y, lookup_idx_times
