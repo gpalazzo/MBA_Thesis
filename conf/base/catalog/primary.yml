@@ -10,10 +10,14 @@ prm_analise_fin:
   type: pandas.ParquetDataSet
   filepath: "data/03_primary/analise_fin_prm.parquet"
 
-prm_usdbrl_fx:
-  type: pandas.ParquetDataSet
-  filepath: "data/03_primary/prm_usdbrl_fx.parquet"
-
 prm_usdbrl_yfinance:
   type: pandas.ParquetDataSet
   filepath: "data/03_primary/prm_usdbrl_yfinance.parquet"
+
+prm_clientes:
+  type: pandas.ParquetDataSet
+  filepath: "data/03_primary/prm_clientes.parquet"
+
+prm_funil_vendas:
+  type: pandas.ParquetDataSet
+  filepath: "data/03_primary/prm_funil_vendas.parquet"

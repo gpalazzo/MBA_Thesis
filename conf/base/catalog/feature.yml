@@ -10,10 +10,6 @@ fte_analise_fin:
   type: pandas.ParquetDataSet
   filepath: "data/04_feature/analise_fin_fte.parquet"
 
-fte_usdbrl_fx:
-  type: pandas.ParquetDataSet
-  filepath: "data/04_feature/fte_usdbrl_fx.parquet"
-
 fte_usdbrl_yfinance:
   type: pandas.ParquetDataSet
   filepath: "data/04_feature/fte_usdbrl_yfinance.parquet"
