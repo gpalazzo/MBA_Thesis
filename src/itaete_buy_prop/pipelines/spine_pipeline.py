@@ -10,12 +10,14 @@ def spine_pipeline() -> pipeline:
     _spine_pipeline = pipeline(
         Pipeline([
             node(func=spine_prm,
-                inputs="raw_crm_bi_analise_financeira",
+                inputs=["prm_analise_fin",
+                        "prm_funil_vendas",
+                        "prm_clientes"],
                 outputs="prm_spine",
                 name="run_spine_prm"),
 
             node(func=spine_preprocessing,
-                inputs=["prm_spine", "prm_origem_receita_frota", "params:spine_params"],
+                inputs=["prm_spine", "params:spine_params"],
                 outputs="preprocessing_spine",
                 name="run_spine_preprocessing"),
 

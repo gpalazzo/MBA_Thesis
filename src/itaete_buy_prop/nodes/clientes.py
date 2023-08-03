@@ -29,9 +29,7 @@ def clientes_prm(df_org_rec_frota: pd.DataFrame,
 			(df["tipo_produto"] == params["produto"])
 			]
 
-	df = df[["id_cliente"]]
-
-	assert df.shape[0] == df.drop_duplicates().shape[0], "id_cliente não é único, revisar"
+	assert df.shape[0] == df[["id_cliente"]].drop_duplicates().shape[0], "id_cliente não é único, revisar"
 	assert df.isnull().sum().sum() == 0, "Nulos no primary, revisar"
 
 	return df
