@@ -11,41 +11,44 @@ from itaete_buy_prop.utils import (
     string_normalizer,
 )
 
-BASE_JOIN_COLS = ["id_cliente", "data_alvo", "data_inferior"]
+BASE_JOIN_COLS = ["id_cliente", "data_pedido", "data_faturamento"]
 
 
 def analise_fin_prm(df: pd.DataFrame, clientes_df: pd.DataFrame) -> pd.DataFrame:
 
     df = df[["SeqPessoa",
+             "Processo",
              "Potencial do cliente",
              "Linha Credito",
              "Data pedido",
              "Dta Fat",
-             "Valor Total"]].rename(columns={"SeqPessoa": "id_cliente"})
+             "Empresa",
+             "Tipo produto",
+             "Valor Total"]].rename(columns={"SeqPessoa": "id_cliente",
+                                             "Dta Fat": "data_faturamento"})
 
-    # considera somente uma cultura específica (ver parâmetros)
-    df = df.merge(clientes_df[["id_cliente"]], on="id_cliente", how="inner")
     df.columns = [string_normalizer(col) for col in df.columns]
-
-    # remover dado quando as 2 colunas são iguais a "-"
-    df = df[~((df["data_pedido"] == "-") & (df["dta_fat"] == "-"))]
-    df = df.replace({"-": np.nan})
-
-    df.loc[:, "ref_date"] = df.apply(lambda col: col["data_pedido"] \
-                                     if pd.isnull(col["dta_fat"]) \
-                                    else col["dta_fat"], axis=1)
-    df["ref_date"] = df["ref_date"].dt.date
-    df = df.drop(columns=["data_pedido", "dta_fat"])
-
-    _cols = ["potencial_do_cliente", "linha_credito"]
+    _cols = ["potencial_do_cliente", "linha_credito",
+             "empresa", "tipo_produto"]
     df = col_string_normalizer(df=df, _cols_to_normalize=_cols)
 
-    assert df[["id_cliente", "ref_date"]].isnull().sum().sum() == 0, "Nulos no primary, revisar"
+    df_merged = df.merge(clientes_df[["id_cliente", "empresa", "tipo_produto"]], \
+                        on=["id_cliente", "empresa", "tipo_produto"],\
+                        how="inner")
+    df_merged = df_merged.drop(columns=["empresa", "tipo_produto"])
 
-    return df
+    df_merged = df_merged.replace({"-": np.nan})
+    df_merged.loc[:, "data_pedido"] = pd.to_datetime(df_merged["data_pedido"], errors="ignore").dt.date
+    df_merged.loc[:, "data_faturamento"] = pd.to_datetime(df_merged["data_faturamento"], errors="ignore").dt.date
+
+    return df_merged
 
 
 def analise_fin_fte(df: pd.DataFrame, spine: pd.DataFrame) -> pd.DataFrame:
+
+    """
+    ********** LEGADO, REVISAR! **********
+    """
 
     df = input_null_values(df=df, input_strategy="most_frequent")
 

@@ -1,9 +1,3 @@
-raw_crm_bi_analise_financeira:
-  type: pandas.ExcelDataSet
-  filepath: "data/01_raw/Dados CRM e BI - TCC - Atualizado.xlsx"
-  load_args:
-    sheet_name: "Análise Fin - BI"
-
 prm_spine:
   type: pandas.ParquetDataSet
   filepath: "data/03_primary/spine_prm.parquet"
@@ -40,15 +34,29 @@ raw_crm_bi_origem_receita_frota:
   load_args:
     sheet_name: "Origem de Receita e Frota - CRM"
 
-prm_origem_receita_frota:
+prm_clientes:
   type: pandas.ParquetDataSet
-  filepath: "data/03_primary/origem_receita_frota_prm.parquet"
-
-fte_origem_receita_frota:
-  type: pandas.ParquetDataSet
-  filepath: "data/04_feature/origem_receita_frota_fte.parquet"
+  filepath: "data/03_primary/prm_clientes.parquet"
 
 # -----------------------------------------
+
+raw_crm_bi_funil_vendas:
+  type: pandas.ExcelDataSet
+  filepath: "data/01_raw/Dados CRM e BI - TCC - Atualizado.xlsx"
+  load_args:
+    sheet_name: "Funil de Vendas - BI"
+
+prm_funil_vendas:
+  type: pandas.ParquetDataSet
+  filepath: "data/03_primary/prm_funil_vendas.parquet"
+
+# -----------------------------------------
+
+raw_crm_bi_analise_financeira:
+  type: pandas.ExcelDataSet
+  filepath: "data/01_raw/Dados CRM e BI - TCC - Atualizado.xlsx"
+  load_args:
+    sheet_name: "Análise Fin - BI"
 
 prm_analise_fin:
   type: pandas.ParquetDataSet

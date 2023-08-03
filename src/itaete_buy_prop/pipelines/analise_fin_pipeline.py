@@ -10,7 +10,7 @@ def analise_fin_pipeline() -> pipeline:
     _analise_fin_pipeline = pipeline(
         Pipeline([
             node(func=analise_fin_prm,
-                inputs=["raw_crm_bi_analise_financeira", "prm_origem_receita_frota"],
+                inputs=["raw_crm_bi_analise_financeira", "prm_clientes"],
                 outputs="prm_analise_fin",
                 name="run_analise_fin_prm"),
 

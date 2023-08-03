@@ -3,13 +3,12 @@ spine_params:
   dt_fat_lookback_window: 180 #exemplo: 2 anos (2*365)
   dt_fat_lookforward_window: 365 #exemplo: 1 ano (1*365)
   #diferença de dias permitido entre data do pedido e do faturamento, sendo pedido > faturamento
-  dt_fat_pedido_diffdays: 30
-  # quantidades de dias para considerar os pedidos no cálculo da mediana
-  # apenas para pedidos onde não há faturamento, é um dado fake para considerar os pedidos de label "não_compra"
-  qtd_dias_lookback_pedidos: 1095 #3 anos (3*365)
+  dt_fat_pedido_diffdays: 60
 
 clientes_params:
   cultura: "laranja"
+  produto: "tratores"
+  empresa: "jales"
 
 master_table_params:
   treino_teste_split:
@@ -45,3 +44,7 @@ logreg_params:
     fit_intercept: true
     class_weight: "balanced"
     l1_ratio: 0.1
+
+funil_vendas_params:
+  status_pedidos: #status inválidos
+    - desistiu_da_compra
