@@ -11,7 +11,7 @@ from itaete_buy_prop.utils import (
     string_normalizer,
 )
 
-BASE_JOIN_COLS = ["id_cliente", "data_pedido", "data_faturamento"]
+BASE_JOIN_COLS = ["id_cliente", "data_inferior", "data_alvo"]
 
 
 def analise_fin_prm(df: pd.DataFrame, clientes_df: pd.DataFrame) -> pd.DataFrame:
@@ -46,32 +46,32 @@ def analise_fin_prm(df: pd.DataFrame, clientes_df: pd.DataFrame) -> pd.DataFrame
 
 def analise_fin_fte(df: pd.DataFrame, spine: pd.DataFrame) -> pd.DataFrame:
 
-    """
-    ********** LEGADO, REVISAR! **********
-    """
+    df = df[["id_cliente", "data_pedido", "potencial_do_cliente", "linha_credito", "valor_total"]] \
+            .drop_duplicates() \
+            .dropna(subset=["data_pedido"])
 
-    df = input_null_values(df=df, input_strategy="most_frequent")
+    df = input_null_values(df=df, input_strategy="most_frequent", date_col_name="data_pedido")
 
-    df_grp = df.groupby(["id_cliente", "ref_date", "potencial_do_cliente", "linha_credito"]) \
+    df_grp = df.groupby(["id_cliente", "data_pedido", "potencial_do_cliente", "linha_credito"]) \
         ["valor_total"].sum() \
         .reset_index()
 
     fte_df = pd.DataFrame()
 
-    for cliente, data_inferior, data_alvo in zip(spine["id_cliente"], spine["data_inferior"], spine["data_faturamento_nova"]):
+    for cliente, data_inferior, data_alvo in zip(spine["id_cliente"], spine["data_inferior"], spine["data_pedido"]):
 
         dfaux = df_grp[(df_grp["id_cliente"] == cliente) & \
-                        (df_grp["ref_date"].between(data_inferior, data_alvo))]
+                        (df_grp["data_pedido"].between(data_inferior, data_alvo))]
 
         # se dataframe não tiver dado para o cliente na janela, então ignora o código abaixo
         if dfaux.empty:
             continue
 
         else:
-            df_tempo_medio = _calcula_tempoMedioDias(datas=dfaux["ref_date"].tolist())
+            df_tempo_medio = _calcula_tempoMedioDias(datas=dfaux["data_pedido"].tolist())
             df_vlr_ctg_contar = _conta_valorCategorico(df=dfaux, cols=["potencial_do_cliente", "linha_credito"])
             df_soma_compras = _soma_valorTotal_compras(compras=dfaux["valor_total"].tolist())
-            df_dias_ultima_compra = _calcula_diasPassados_ultimaCompra(datas=dfaux["ref_date"].tolist(),
+            df_dias_ultima_compra = _calcula_diasPassados_ultimaCompra(datas=dfaux["data_pedido"].tolist(),
                                                                        data_maxima=data_alvo)
 
             fte_dfaux = pd.concat([df_tempo_medio, df_vlr_ctg_contar, df_soma_compras, df_dias_ultima_compra], axis=1)

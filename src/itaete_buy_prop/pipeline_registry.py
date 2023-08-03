@@ -8,7 +8,6 @@ from itaete_buy_prop.pipelines import (
     analise_fin_pipeline,
     clientes_pipeline,
     funil_vendas_pipeline,
-    fx_pipeline,
     logreg_pipeline,
     master_table_pipeline,
     quali_clientes_crm_pipeline,
@@ -27,7 +26,6 @@ def register_pipelines() -> Dict[str, Pipeline]:
                                      quali_clientes_crm_pipeline() +
                                      clientes_pipeline() +
                                      analise_fin_pipeline() +
-                                     fx_pipeline() +
                                      yfinance_pipeline() +
                                      funil_vendas_pipeline() +
                                      master_table_pipeline() +

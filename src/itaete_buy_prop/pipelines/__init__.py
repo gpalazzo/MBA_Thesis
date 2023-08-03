@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from .analise_fin_pipeline import analise_fin_pipeline
-from .BKP_fx_pipeline import fx_pipeline
 from .BKP_quali_clientes_crm_pipeline import quali_clientes_crm_pipeline
 from .clientes_pipeline import clientes_pipeline
 from .funil_vendas_pipeline import funil_vendas_pipeline

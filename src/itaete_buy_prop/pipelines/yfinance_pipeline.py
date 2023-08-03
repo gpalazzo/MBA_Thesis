@@ -20,7 +20,10 @@ def yfinance_pipeline() -> pipeline:
                 name="run_yfinance_prm"),
 
             node(func=yfinance_fte,
-                inputs=["prm_usdbrl_yfinance", "label_spine"],
+                inputs=["prm_usdbrl_yfinance",
+                        "label_spine",
+                        "params:fx_params",
+                        "params:spine_params.dt_fat_lookback_window"],
                 outputs="fte_usdbrl_yfinance",
                 name="run_yfinance_fte")
         ],
