@@ -1,0 +1,3 @@
+funil_vendas_params:
+  status_pedidos: #status inválidos
+    - desistiu_da_compra

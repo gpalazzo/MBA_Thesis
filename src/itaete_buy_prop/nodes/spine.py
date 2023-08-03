@@ -8,8 +8,7 @@ BASE_JOIN_COLS = ["id_cliente", "data_pedido", "data_inferior"]
 
 
 def spine_prm(df_anls_fin: pd.DataFrame,
-              df_fnl_vendas: pd.DataFrame,
-              clientes_df: pd.DataFrame) -> pd.DataFrame:
+              df_fnl_vendas: pd.DataFrame) -> pd.DataFrame:
 
     df_anls_fin = df_anls_fin[["id_cliente", "processo", "data_pedido", "data_faturamento"]] \
                     .rename(columns={"data_pedido": "data_pedido2",

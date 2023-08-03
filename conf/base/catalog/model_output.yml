@@ -1,0 +1,5 @@
+logreg_model_predict:
+  type: pandas.ParquetDataSet
+  filepath: "data/07_model_output/logreg_model_predict.parquet"
+  save_args:
+    index: True

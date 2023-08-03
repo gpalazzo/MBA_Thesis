@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 import unicodedata
+from datetime import datetime, timedelta
 from typing import Any, Dict, List
 
 import numpy as np
@@ -68,7 +69,7 @@ def input_null_values(df: pd.DataFrame,
     null_cols = df.columns[df.isna().any()].tolist()
 
     if null_cols != []:
-        null_dates = _get_date_null_cols(df=df, null_cols=null_cols)
+        null_dates = _get_date_null_cols(df=df, null_cols=null_cols, date_col_name=date_col_name)
         null_dates = sorted(null_dates, reverse=True)
         max_date = null_dates[0]
 
@@ -142,3 +143,61 @@ def optimize_params(model: LogisticRegression,
     grid_result = grid_search.fit(X_train, y_train)
 
     return grid_result
+
+
+def define_janela_datas(data_inicio: datetime.date,
+                        qtd_janelas: int,
+                        tamanho_janela_dias: int) -> Dict[str, str]:
+
+    janelas_dict = {}
+    PREFIX = "janela"
+
+    for i in list(range(1, qtd_janelas+1)):
+        data_inicio_janela = data_inicio + timedelta(days=tamanho_janela_dias * (i-1))
+        data_fim_janela = data_inicio + timedelta(days=tamanho_janela_dias * i)
+
+        janelas_dict[f"{PREFIX}{i}"] = [data_inicio_janela, data_fim_janela]
+
+    return janelas_dict
+
+
+def filtra_data_janelas(df: pd.DataFrame,
+                        date_col_name: str,
+                        janelas: Dict[str, List[datetime.date]],
+                        tipo_janela: str) -> pd.DataFrame:
+
+    final_df = pd.DataFrame()
+
+    for janela, datas in janelas.items():
+        if tipo_janela == "right":
+            _data = datas[1]
+        elif tipo_janela == "left":
+            _data = datas[0]
+        else:
+            raise RuntimeError("tipo_janela desconhecida, revisar")
+
+        dfaux = df[df[date_col_name] == _data]
+        dfaux = dfaux \
+                    .set_index(date_col_name) \
+                    .add_prefix(f"{janela}__") \
+                    .reset_index(drop=True)
+
+        final_df = pd.concat([final_df, dfaux], axis=1)
+
+    return final_df
+
+
+def seleciona_janelas(janelas: Dict[str, List[datetime.date]],
+                      slc_janelas_numero: List[int]) -> Dict[str, List[datetime.date]]:
+
+    _dict = {}
+
+    janelas_alvo = [f"janela{i}" for i in slc_janelas_numero]
+    keys = list(janelas)
+
+    janelas_alvo = set(janelas_alvo).intersection(keys)
+
+    for janela in janelas_alvo:
+        _dict[janela] = janelas[janela]
+
+    return _dict
