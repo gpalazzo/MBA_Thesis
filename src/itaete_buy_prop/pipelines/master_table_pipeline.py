@@ -4,7 +4,6 @@ from kedro.pipeline import Pipeline, node, pipeline
 
 from itaete_buy_prop.nodes import (
     cria_master_table,
-    mt_balanceia_classes,
     mt_remove_ftes_multic,
     mt_seleciona_features,
     mt_split_treino_teste,
@@ -21,28 +20,24 @@ def master_table_pipeline() -> pipeline:
                 outputs="master_table",
                 name="run_cria_master_table"),
 
-            node(func=mt_balanceia_classes,
-                inputs=["master_table", "params:master_table_params"],
-                outputs="master_table_balanceada",
-                name="run_mt_balanceia_classes"),
-
             node(func=mt_remove_ftes_multic,
-                inputs=["master_table_balanceada", "params:master_table_params"],
+                inputs=["master_table", "params:master_table_params"],
                 outputs=["master_table_remove_ftes_multic", "master_table_multic_vif_values"],
                 name="run_mt_remove_ftes_multic"),
 
             node(func=mt_split_treino_teste,
                 inputs=["master_table_remove_ftes_multic", "params:master_table_params"],
-                outputs=["master_table_treino_ftes_tmp", "master_table_treino_tgt",
-                         "master_table_teste_ftes_tmp", "master_table_teste_tgt"],
+                outputs=["master_table_treino", "master_table_teste"],
                 name="run_mt_split_treino_teste"),
 
             node(func=mt_seleciona_features,
-                inputs=["master_table_treino_ftes_tmp", "master_table_treino_tgt",
-                        "master_table_teste_ftes_tmp",
+                inputs=["master_table_treino",
+                        "master_table_teste",
                         "params:master_table_params"],
                 outputs=["master_table_treino_ftes",
+                         "master_table_treino_tgt",
                          "master_table_teste_ftes",
+                         "master_table_teste_tgt",
                          "master_table_fte_slc_importancias"],
                 name="run_mt_seleciona_features"),
         ],
