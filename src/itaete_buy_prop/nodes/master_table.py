@@ -4,6 +4,7 @@ from functools import reduce
 from typing import Any, Dict, List, Tuple
 
 import pandas as pd
+from imblearn.over_sampling import SMOTE
 from imblearn.under_sampling import NearMiss
 from sklearn.feature_selection import SelectKBest, mutual_info_classif
 from sklearn.model_selection import train_test_split
@@ -77,12 +78,13 @@ def mt_split_treino_teste(master_table: pd.DataFrame,
     else:
         del treino_teste_params["stratify"]
 
+    master_table = master_table.sort_index(level="data_alvo")
     train_df, test_df = train_test_split(master_table, **treino_teste_params)
 
-    X_train, y_train = train_df.drop(columns=params["target_col"]), train_df[[target_col]]
-    X_test, y_test = test_df.drop(columns=params["target_col"]), test_df[[target_col]]
+    train_df_balanceado = mt_balanceia_classes(df=train_df, params=params)
+    test_df = test_df.reset_index(drop=True)
 
-    return X_train, y_train, X_test, y_test
+    return train_df_balanceado, test_df
 
 
 def mt_balanceia_classes(df: pd.DataFrame,
@@ -90,6 +92,7 @@ def mt_balanceia_classes(df: pd.DataFrame,
 
     target_col = params["target_col"]
     limite_classes = params["class_bounds"]
+    tecnica_sampling = params["sampling_technique"]
 
     logger.info("Checking for class balance")
     label0_count, _ = df[target_col].value_counts()
@@ -102,14 +105,17 @@ def mt_balanceia_classes(df: pd.DataFrame,
                     limite_classes["upper"]) \
                     [0]: #pull index [0] always works because it's only 1 label
 
-        logger.info("Balanceando classes")
         X, y = df.drop(columns=[target_col]), df[[target_col]]
-        df = _balanceia_classes(X=X, y=y)
+        logger.info("Balanceando classes")
+        if tecnica_sampling == "nearmiss":
+            df = _balanceia_nearmiss(X=X, y=y)
+        elif tecnica_sampling == "smote":
+            df = _balanceia_smote(X=X, y=y)
+        else:
+            pass
 
     else:
         logger.info("Class are balanced, skipping balancing method")
-
-    df = df.set_index(CLIENTE_BASE_JOIN_COLS)
 
     return df
 
@@ -138,12 +144,17 @@ def mt_remove_ftes_multic(df: pd.DataFrame,
     return df, _vif
 
 
-def mt_seleciona_features(X_train: pd.DataFrame,
-                        y_train: pd.DataFrame,
-                        X_test: pd.DataFrame,
+def mt_seleciona_features(df_train: pd.DataFrame,
+                        df_test: pd.DataFrame,
                         params: Dict[str, Any]) -> Tuple[pd.DataFrame,
                                                          pd.DataFrame,
+                                                         pd.DataFrame,
+                                                         pd.DataFrame,
                                                          pd.DataFrame]:
+
+    target_col = params["target_col"]
+    X_train, y_train = df_train.drop(columns=[target_col]), df_train[[target_col]]
+    X_test, y_test = df_test.drop(columns=[target_col]), df_test[[target_col]]
 
     topN_features = params["slc_topN_features"]
 
@@ -165,10 +176,10 @@ def mt_seleciona_features(X_train: pd.DataFrame,
     slct_cols = X_train.iloc[:, slct_cols_idx].columns.tolist()
     X_train, X_test = X_train[slct_cols], X_test[slct_cols]
 
-    return X_train, X_test, df_fte_imps
+    return X_train, y_train, X_test, y_test, df_fte_imps
 
 
-def _balanceia_classes(X: pd.DataFrame, y: pd.DataFrame) -> pd.DataFrame:
+def _balanceia_nearmiss(X: pd.DataFrame, y: pd.DataFrame) -> pd.DataFrame:
 
     X, y, lookup_idx_times = _cria_fake_index(X=X, y=y)
 
@@ -182,6 +193,16 @@ def _balanceia_classes(X: pd.DataFrame, y: pd.DataFrame) -> pd.DataFrame:
     mt = mt.merge(lookup_idx_times, left_index=True, right_index=True, how="inner")
 
     return mt
+
+
+def _balanceia_smote(X: pd.DataFrame, y: pd.DataFrame) -> pd.DataFrame:
+
+    sampler = SMOTE(random_state=0)
+    X_bal, y_bal = sampler.fit_resample(X, y)
+
+    df = X_bal.merge(y_bal, left_index=True, right_index=True, how="inner")
+
+    return df
 
 
 def _cria_fake_index(X: pd.DataFrame, y: pd.DataFrame) -> Tuple[pd.DataFrame,
