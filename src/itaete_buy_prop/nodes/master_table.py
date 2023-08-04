@@ -7,6 +7,7 @@ import pandas as pd
 from imblearn.under_sampling import NearMiss
 from sklearn.feature_selection import SelectKBest, mutual_info_classif
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
 from statsmodels.stats.outliers_influence import variance_inflation_factor as vif
 
 logger = logging.getLogger(__name__)
@@ -38,12 +39,13 @@ def cria_master_table(spine: pd.DataFrame,
                      "compra": 1}
     mt_df_all.loc[:, target_col] = mt_df_all[target_col].map(TARGET_MAPPER)
 
-    assert mt_df_all.shape[0] == mt_df_all[CLIENTE_BASE_JOIN_COLS].drop_duplicates().shape[0], \
+    mt_df_all = mt_df_all.set_index(CLIENTE_BASE_JOIN_COLS)
+    mt_df_norm = _normaliza_features(df=mt_df_all, target_col=target_col)
+
+    assert mt_df_norm.shape[0] == mt_df_norm.drop_duplicates().shape[0], \
         "Master table duplicada, revisar"
 
-    mt_df_all = mt_df_all.set_index(CLIENTE_BASE_JOIN_COLS)
-
-    return mt_df_all
+    return mt_df_norm
 
 
 def _split_dataset_levels(args: List[pd.DataFrame]) -> Tuple[pd.DataFrame, pd.DataFrame]:
@@ -102,7 +104,7 @@ def mt_balanceia_classes(df: pd.DataFrame,
 
         logger.info("Balanceando classes")
         X, y = df.drop(columns=[target_col]), df[[target_col]]
-        df = _balance_classes(X=X, y=y)
+        df = _balanceia_classes(X=X, y=y)
 
     else:
         logger.info("Class are balanced, skipping balancing method")
@@ -166,7 +168,7 @@ def mt_seleciona_features(X_train: pd.DataFrame,
     return X_train, X_test, df_fte_imps
 
 
-def _balance_classes(X: pd.DataFrame, y: pd.DataFrame) -> pd.DataFrame:
+def _balanceia_classes(X: pd.DataFrame, y: pd.DataFrame) -> pd.DataFrame:
 
     X, y, lookup_idx_times = _cria_fake_index(X=X, y=y)
 
@@ -200,3 +202,17 @@ def _cria_fake_index(X: pd.DataFrame, y: pd.DataFrame) -> Tuple[pd.DataFrame,
                         .set_index(FAKE_IDX_NAME)
 
     return X, y, lookup_idx_times
+
+
+def _normaliza_features(df: pd.DataFrame, target_col: str) -> pd.DataFrame:
+
+    df_tgt = df[[target_col]]
+    df_fte = df.drop(columns=[target_col])
+
+    scaler = MinMaxScaler()
+    df_fit_transf = pd.DataFrame(scaler.fit_transform(df_fte), columns=df_fte.columns, index=df_fte.index)
+
+    final_df = df_fit_transf.merge(df_tgt, left_index=True, right_index=True, how="inner")
+    assert final_df.shape[0] == df.shape[0], "Drop de dados errado, revisar"
+
+    return final_df
