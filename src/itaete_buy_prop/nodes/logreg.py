@@ -8,8 +8,6 @@ import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix
 
-from itaete_buy_prop.utils import optimize_params
-
 logger = logging.getLogger(__name__)
 warnings.filterwarnings("ignore")
 
@@ -18,28 +16,12 @@ def logreg_model_fit(X_train: pd.DataFrame,
                     y_train: pd.DataFrame,
                     model_params: Dict[str, Any]) -> LogisticRegression:
 
-    logreg_optimize_params = model_params["model_params_otimizar"]
     logreg_default_params = model_params["model_params_padrao"]
     logreg_extra_params = model_params["model_params_extra"]
 
     model = LogisticRegression(**logreg_default_params)
-
-    if logreg_optimize_params:
-        # params opt
-        logger.info("Optimzing parameters")
-        params_opt = optimize_params(model=model,
-                                    grid=model_params,
-                                    X_train=X_train,
-                                    y_train=y_train,
-                                    n_splits=10,
-                                    n_repeats=3)
-        params_opt = params_opt.best_params_
-
-    else:
-        params_opt = logreg_extra_params.copy()
-
-    params_opt.update(logreg_default_params)
-    model.set_params(**params_opt)
+    logreg_extra_params.update(logreg_default_params)
+    model.set_params(**logreg_extra_params)
     model.fit(X_train, y_train)
 
     return model
