@@ -2,7 +2,7 @@ master_table_params:
   treino_teste_split:
     shuffle: false #bool: true or false
     train_size: 0.6
-    random_state: 42
+    random_state: 0
     stratify: false #bool: true or false
 
   target_col: "label" #nome da coluna target
@@ -16,4 +16,4 @@ master_table_params:
   vif_limite: 10 #valor limite para o vif
   slc_topN_features: 20 #quantidade de features a serem selecionadas
 
-  sampling_technique: "smote"
+  sampling_technique: "smote" #válidos: smote, nearmiss

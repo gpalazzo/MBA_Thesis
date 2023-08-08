@@ -1,16 +1,23 @@
-# se `model_params_otimizar` é true, então os parâmetros serão otimizados em run time
 logreg_params:
-  model_params_otimizar: false
   # utilizar esses parâmetros independentemente de otimização
   model_params_padrao:
     n_jobs: -1
-  # se `optimize_params` é false, então usa esses parâmetros
+    random_state: 0
+  # parâmetros default da biblioteca:
+  # - fit_intercept = True
+  # - class_weight = None
+  # - max_iter = 100
   model_params_extra:
-    # solver: "saga"
-    penalty: "l2"
-    # tol: 0.001
-    C: 0.12648552168552957
-    # max_iter: 200
-    fit_intercept: true
-    # class_weight: "balanced"
+    solver: "saga"
+    penalty: "l1"
+    tol: 0.00001
+    C: 339.3221771895323
     # l1_ratio: 0.1
+
+# ANALISAR OS RESULTADOS COM ESSES PARAMETROS
+# {'C': 339.3221771895323,
+#  'class_weight': 'balanced',
+#  'fit_intercept': True,
+#  'penalty': 'l2',
+#  'solver': 'saga',
+#  'tol': 0.001}
