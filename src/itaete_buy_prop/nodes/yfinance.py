@@ -2,6 +2,7 @@
 import math
 from typing import Any, Dict
 
+import numpy as np
 import pandas as pd
 import yfinance as yf
 from sklearn.feature_selection import VarianceThreshold
@@ -42,8 +43,6 @@ def yfinance_fte(df: pd.DataFrame,
                 spine_lookback_days: int) -> pd.DataFrame:
 
     fte_df = pd.DataFrame()
-    ACCEPTED_COLS = ("timestamp", "volatility", "trend", "momentum")
-
     spine = spine[["data_inferior", "data_visita"]].drop_duplicates()
 
     # quantidade de janelas para agregar as features
@@ -59,27 +58,26 @@ def yfinance_fte(df: pd.DataFrame,
             continue
 
         else:
-            try:
-                fteaux = add_all_ta_features(dfaux, open="open", high="high", low="low", close="close", volume="volume")
-            except Exception as e:
-                continue
+            techn_ftes_df = _build_technical_ftes(df=dfaux)
+            biz_ftes_df = _build_biz_ftes(df=dfaux)
 
-            fteaux = fteaux[[col for col in fteaux.columns if col.startswith(ACCEPTED_COLS)]]
-            fteaux = _aplica_threshold_var(df=fteaux)
+            fteaux_df = techn_ftes_df.merge(biz_ftes_df, on="timestamp", how="inner")
+            assert fteaux_df.shape[0] == techn_ftes_df.shape[0] == biz_ftes_df.shape[0], \
+                "Número errado de linhas após join, revisar"
 
             define_janelas = define_janela_datas(data_inicio=data_inferior,
                                                 qtd_janelas=qtd_janelas,
                                                 tamanho_janela_dias=tamanho_janela_dias)
             define_janelas = seleciona_janelas(janelas=define_janelas, slc_janelas_numero=[1, 12])
 
-            fteaux = filtra_data_janelas(df=fteaux,
+            fteaux_df = filtra_data_janelas(df=fteaux_df,
                                         date_col_name="timestamp",
                                         janelas=define_janelas,
                                         tipo_janela="right")
 
-            fteaux.loc[:, ["data_inferior", "data_alvo"]] = [data_inferior, data_alvo]
+            fteaux_df.loc[:, ["data_inferior", "data_alvo"]] = [data_inferior, data_alvo]
 
-            fte_df = pd.concat([fte_df, fteaux])
+            fte_df = pd.concat([fte_df, fteaux_df])
 
     fte_df = fte_df.fillna(0)
 
@@ -99,5 +97,36 @@ def _aplica_threshold_var(df: pd.DataFrame) -> pd.DataFrame:
     df = df[df.columns[selector.get_support(indices=True)]]
 
     df = df.reset_index()
+
+    return df
+
+
+def _build_technical_ftes(df: pd.DataFrame) -> pd.DataFrame:
+
+    ACCEPTED_COLS = ("timestamp", "volatility", "trend", "momentum")
+
+    fteaux = add_all_ta_features(df, open="open", high="high", low="low", close="close", volume="volume")
+
+    fteaux = fteaux[[col for col in fteaux.columns if col.startswith(ACCEPTED_COLS)]]
+    fteaux = _aplica_threshold_var(df=fteaux)
+
+    return fteaux
+
+
+def _build_biz_ftes(df: pd.DataFrame) -> pd.DataFrame:
+
+    def _build_logreturns(col: pd.Series) -> pd.Series:
+        return np.log(1 + col)
+
+    df = df[["timestamp", "close", "low", "high"]]
+
+    df = df.set_index("timestamp").sort_index()
+    df = df.pct_change().fillna(0)
+    df = df.apply(_build_logreturns, axis=1)
+
+    df.loc[:, "minMaxDiff"] = df["high"] - df["low"]
+    df = df[["close", "minMaxDiff"]].cumsum()
+    df = df.reset_index().rename(columns={"close": "pxclose_cumsum",
+                                          "minMaxDiff": "pxhighlow_diff_cumsum"})
 
     return df
