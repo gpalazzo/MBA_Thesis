@@ -2,26 +2,23 @@
 
 from kedro.pipeline import Pipeline, node, pipeline
 
-from itaete_buy_prop.nodes import spine_labeling, spine_preprocessing, spine_prm
+from itaete_buy_prop.nodes import spine_labeling, spine_preprocessing
 
 
 def spine_pipeline() -> pipeline:
 
     _spine_pipeline = pipeline(
         Pipeline([
-            node(func=spine_prm,
-                inputs=["prm_analise_fin",
-                        "prm_funil_vendas"],
-                outputs="prm_spine",
-                name="run_spine_prm"),
-
             node(func=spine_preprocessing,
-                inputs=["prm_spine", "params:spine_params"],
+                inputs=["prm_cen_visitas",
+                        "prm_clientes",
+                        "params:spine_params"],
                 outputs="preprocessing_spine",
                 name="run_spine_preprocessing"),
 
             node(func=spine_labeling,
-                inputs="preprocessing_spine",
+                inputs=["preprocessing_spine",
+                        "params:spine_params.max_diff_dias_visita"],
                 outputs="label_spine",
                 name="run_spine_label")
         ],

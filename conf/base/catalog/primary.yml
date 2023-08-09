@@ -21,3 +21,7 @@ prm_clientes:
 prm_funil_vendas:
   type: pandas.ParquetDataSet
   filepath: "data/03_primary/prm_funil_vendas.parquet"
+
+prm_cen_visitas:
+  type: pandas.ParquetDataSet
+  filepath: "data/03_primary/prm_cen_visitas.parquet"

@@ -23,8 +23,8 @@ def cria_master_table(spine: pd.DataFrame,
 
     cliente_args, date_args = _split_dataset_levels(args)
 
-    spine = spine[["id_cliente", "data_pedido", "data_inferior", "label"]] \
-                .rename(columns={"data_pedido": "data_alvo"})
+    spine = spine[["id_cliente", "data_visita", "data_inferior", "label"]] \
+                .rename(columns={"data_visita": "data_alvo"})
 
     # join de todos os dados em diferentes níveis de agregação
     # o 1o join é a nível de cliente, logo é o mais granular. então o 2o join não pode ter mais linhas que esse primeiro

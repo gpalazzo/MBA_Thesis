@@ -2,10 +2,6 @@ label_spine:
   type: pandas.ParquetDataSet
   filepath: "data/04_feature/spine_label.parquet"
 
-prm_spine:
-  type: pandas.ParquetDataSet
-  filepath: "data/03_primary/spine_prm.parquet"
-
 preprocessing_spine:
   type: pandas.ParquetDataSet
   filepath: "data/03_primary/spine_preprocessing.parquet"
