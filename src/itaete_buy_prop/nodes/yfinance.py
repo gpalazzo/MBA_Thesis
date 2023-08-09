@@ -70,7 +70,7 @@ def yfinance_fte(df: pd.DataFrame,
             define_janelas = define_janela_datas(data_inicio=data_inferior,
                                                 qtd_janelas=qtd_janelas,
                                                 tamanho_janela_dias=tamanho_janela_dias)
-            define_janelas = seleciona_janelas(janelas=define_janelas, slc_janelas_numero=[6])
+            define_janelas = seleciona_janelas(janelas=define_janelas, slc_janelas_numero=[1, 12])
 
             fteaux = filtra_data_janelas(df=fteaux,
                                         date_col_name="timestamp",

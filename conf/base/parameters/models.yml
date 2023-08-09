@@ -9,15 +9,77 @@ logreg_params:
   # - max_iter = 100
   model_params_extra:
     solver: "saga"
-    penalty: "l1"
-    tol: 0.00001
-    C: 339.3221771895323
-    # l1_ratio: 0.1
+    penalty: "elasticnet"
+    tol: 0.001
+    C: 545.5594781168514
+    class_weight: "balanced"
+    l1_ratio: 0.7847599703514611
 
-# ANALISAR OS RESULTADOS COM ESSES PARAMETROS
-# {'C': 339.3221771895323,
-#  'class_weight': 'balanced',
-#  'fit_intercept': True,
-#  'penalty': 'l2',
-#  'solver': 'saga',
-#  'tol': 0.001}
+# RESULTADOS
+# model_params_extra:
+#   solver: "saga"
+#   penalty: "l1"
+#   tol: 0.001
+#   C: 339.3221771895323
+#   class_weight: "balanced"
+
+#   AUC = 0.647
+
+#               precision    recall  f1-score   support
+
+#            0       0.89      0.54      0.67       143
+#            1       0.32      0.76      0.45        41
+
+#     accuracy                           0.59       184
+#    macro avg       0.60      0.65      0.56       184
+# weighted avg       0.76      0.59      0.62       184
+
+# array([[0.41847826, 0.35869565],
+#        [0.05434783, 0.16847826]])
+
+# ------------------------
+
+# model_params_extra:
+#   solver: "liblinear"
+#   penalty: "l2"
+#   tol: 0.001
+#   C: 494.1713361323828
+#   class_weight: "balanced"
+
+#   AUC = 0.647
+
+#               precision    recall  f1-score   support
+
+#            0       0.89      0.54      0.67       143
+#            1       0.32      0.76      0.45        41
+
+#     accuracy                           0.59       184
+#    macro avg       0.60      0.65      0.56       184
+# weighted avg       0.76      0.59      0.62       184
+
+# array([[0.41847826, 0.35869565],
+#        [0.05434783, 0.16847826]])
+
+# ------------------------
+
+# model_params_extra:
+#   solver: "saga"
+#   penalty: "elasticnet"
+#   tol: 0.001
+#   C: 545.5594781168514
+#   class_weight: "balanced"
+#   l1_ratio: 0.7847599703514611
+
+#   AUC = 0.647
+
+#               precision    recall  f1-score   support
+
+#            0       0.89      0.54      0.67       143
+#            1       0.32      0.76      0.45        41
+
+#     accuracy                           0.59       184
+#    macro avg       0.60      0.65      0.56       184
+# weighted avg       0.76      0.59      0.62       184
+
+# array([[0.41847826, 0.35869565],
+#        [0.05434783, 0.16847826]])
