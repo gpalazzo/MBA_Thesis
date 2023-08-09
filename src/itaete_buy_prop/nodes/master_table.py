@@ -78,7 +78,10 @@ def mt_split_treino_teste(master_table: pd.DataFrame,
     else:
         del treino_teste_params["stratify"]
 
-    master_table = master_table.sort_index(level="data_alvo")
+    # caso queira melhorar a reprodutibilidade do experimento, utilizar esse sort por data
+    # e tirar o stratify e shuffle dos parâmetros
+    # no mundo real, o ideal é manter stratify, shuffle e balancear somente o dataset de treino
+    # master_table = master_table.sort_index(level="data_alvo")
     train_df, test_df = train_test_split(master_table, **treino_teste_params)
 
     train_df_balanceado = mt_balanceia_classes(df=train_df, params=params)
