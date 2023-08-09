@@ -1,11 +1,3 @@
-fte_quali_clientes:
-  type: pandas.ParquetDataSet
-  filepath: "data/04_feature/quali_clientes_fte.parquet"
-
-fte_origem_receita_frota:
-  type: pandas.ParquetDataSet
-  filepath: "data/04_feature/origem_receita_frota_fte.parquet"
-
 fte_analise_fin:
   type: pandas.ParquetDataSet
   filepath: "data/04_feature/analise_fin_fte.parquet"
