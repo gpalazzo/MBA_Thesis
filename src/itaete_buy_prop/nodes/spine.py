@@ -9,10 +9,8 @@ BASE_JOIN_COLS = ["id_cliente", "data_visita", "data_inferior"]
 
 
 def spine_preprocessing(df: pd.DataFrame,
-                        clientes_df: pd.DataFrame,
                         params: Dict[str, Union[str, int]]) -> pd.DataFrame:
 
-    df = df.merge(clientes_df[["id_cliente"]], on="id_cliente", how="inner")
     df = df[df["acao"] == params["acao"]]
 
     # crucial que o sort seja primeiro no cliente e depois na data

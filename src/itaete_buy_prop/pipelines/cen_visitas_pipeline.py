@@ -10,7 +10,8 @@ def cen_visitas_pipeline() -> pipeline:
     _cen_visutas_pipeline = pipeline(
         Pipeline([
             node(func=cen_visitas_prm,
-                inputs="raw_cen_visitas",
+                inputs=["raw_cen_visitas",
+                        "prm_clientes"],
                 outputs="prm_cen_visitas",
                 name="run_cen_visitas_prm")
         ],

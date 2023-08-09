@@ -1,11 +1,3 @@
-prm_quali_clientes:
-  type: pandas.ParquetDataSet
-  filepath: "data/03_primary/quali_clientes_prm.parquet"
-
-prm_origem_receita_frota:
-  type: pandas.ParquetDataSet
-  filepath: "data/03_primary/origem_receita_frota_prm.parquet"
-
 prm_analise_fin:
   type: pandas.ParquetDataSet
   filepath: "data/03_primary/analise_fin_prm.parquet"
