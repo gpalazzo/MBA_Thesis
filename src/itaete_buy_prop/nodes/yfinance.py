@@ -44,13 +44,13 @@ def yfinance_fte(df: pd.DataFrame,
     fte_df = pd.DataFrame()
     ACCEPTED_COLS = ("timestamp", "volatility", "trend", "momentum")
 
-    spine = spine[["data_inferior", "data_pedido"]].drop_duplicates()
+    spine = spine[["data_inferior", "data_visita"]].drop_duplicates()
 
     # quantidade de janelas para agregar as features
     tamanho_janela_dias = params["aggregate_window_days"]
     qtd_janelas = math.floor(spine_lookback_days / tamanho_janela_dias)
 
-    for data_inferior, data_alvo in zip(spine["data_inferior"], spine["data_pedido"]):
+    for data_inferior, data_alvo in zip(spine["data_inferior"], spine["data_visita"]):
 
         dfaux = df[df["timestamp"].between(data_inferior, data_alvo)]
 

@@ -6,11 +6,11 @@ from kedro.pipeline import Pipeline, pipeline
 
 from itaete_buy_prop.pipelines import (
     analise_fin_pipeline,
+    cen_visitas_pipeline,
     clientes_pipeline,
     funil_vendas_pipeline,
     logreg_pipeline,
     master_table_pipeline,
-    quali_clientes_crm_pipeline,
     spine_pipeline,
     yfinance_pipeline,
 )
@@ -22,11 +22,11 @@ def register_pipelines() -> Dict[str, Pipeline]:
     Returns:
         A mapping from a pipeline name to a ``Pipeline`` object.
     """
-    return {"__default__": pipeline([spine_pipeline() +
-                                     quali_clientes_crm_pipeline() +
-                                     clientes_pipeline() +
+    return {"__default__": pipeline([clientes_pipeline() +
                                      analise_fin_pipeline() +
                                      yfinance_pipeline() +
                                      funil_vendas_pipeline() +
+                                     cen_visitas_pipeline() +
+                                     spine_pipeline() +
                                      master_table_pipeline() +
                                      logreg_pipeline()])}

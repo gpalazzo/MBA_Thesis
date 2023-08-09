@@ -4,3 +4,6 @@ spine_params:
   dt_fat_lookforward_window: 365 #exemplo: 1 ano (1*365)
   #diferença de dias permitido entre data do pedido e do faturamento, sendo pedido > faturamento
   dt_fat_pedido_diffdays: 60
+  acao: "monitorar_cli_cart"
+  # quantidade máxima de dias para considerar um resultado = `contato_em_andamento` com pedido precedendo esse resultado
+  max_diff_dias_visita: 57

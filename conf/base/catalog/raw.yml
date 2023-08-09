@@ -25,3 +25,9 @@ raw_crm_bi_funil_vendas:
   filepath: "data/01_raw/Dados CRM e BI - TCC - Atualizado.xlsx"
   load_args:
     sheet_name: "Funil de Vendas - BI"
+
+raw_cen_visitas:
+  type: pandas.ExcelDataSet
+  filepath: "data/01_raw/Visitas CENS - 2018 a 2023.xlsx"
+  load_args:
+    sheet_name: "Planilha1"

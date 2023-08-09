@@ -58,7 +58,7 @@ def analise_fin_fte(df: pd.DataFrame, spine: pd.DataFrame) -> pd.DataFrame:
 
     fte_df = pd.DataFrame()
 
-    for cliente, data_inferior, data_alvo in zip(spine["id_cliente"], spine["data_inferior"], spine["data_pedido"]):
+    for cliente, data_inferior, data_alvo in zip(spine["id_cliente"], spine["data_inferior"], spine["data_visita"]):
 
         dfaux = df_grp[(df_grp["id_cliente"] == cliente) & \
                         (df_grp["data_pedido"].between(data_inferior, data_alvo))]
