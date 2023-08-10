@@ -21,3 +21,7 @@ prm_cen_visitas:
 prm_precos_diesel:
   type: pandas.ParquetDataSet
   filepath: "data/03_primary/prm_precos_diesel.parquet"
+
+prm_precos_laranja:
+  type: pandas.ParquetDataSet
+  filepath: "data/03_primary/prm_precos_laranja.parquet"

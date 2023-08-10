@@ -19,7 +19,7 @@ def precos_diesel_prm(df: pd.DataFrame) -> pd.DataFrame:
 
     df = df[["Data da Coleta", "Valor de Venda"]] \
             .rename(columns={"Data da Coleta": "data",
-                             "Valor de Venda": "preco_medio"})
+                             "Valor de Venda": "preco_medio_diesel"})
 
     df.loc[:, "data"] = df["data"].dt.date
 
@@ -83,19 +83,19 @@ def _build_biz_ftes(df: pd.DataFrame) -> pd.DataFrame:
     def _build_logreturns(col: pd.Series) -> pd.Series:
         return np.log(1 + col)
 
-    df = df[["data", "preco_medio"]]
+    df = df[["data", "preco_medio_diesel"]]
 
     df = df.set_index("data").sort_index()
     df = df.pct_change().fillna(0)
     df = df.apply(_build_logreturns, axis=1)
 
-    df = df[["preco_medio"]].cumsum()
-    df = df.reset_index().rename(columns={"preco_medio": "preco_medio_cumsum"})
+    df = df[["preco_medio_diesel"]].cumsum()
+    df = df.reset_index().rename(columns={"preco_medio_diesel": "preco_medio_diesel_cumsum"})
 
     return df
 
 
 def SMA(data, ndays):
-    SMA = pd.Series(data['preco_medio'].rolling(ndays).mean(), name=f"SMA_{ndays}dias")
+    SMA = pd.Series(data["preco_medio_diesel"].rolling(ndays).mean(), name=f"SMA_{ndays}dias")
     data = data.join(SMA)
     return data[["data", f"SMA_{ndays}dias"]]
