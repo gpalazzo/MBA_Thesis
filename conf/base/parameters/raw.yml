@@ -1,4 +1,5 @@
 yfinance_params:
   tickers:
     - BRL=X
-  start_date: "2017-01-01"
+  start_date: "2017-01-08"
+  end_date: "2023-06-30"

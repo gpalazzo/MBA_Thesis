@@ -25,3 +25,15 @@ raw_cen_visitas:
   filepath: "data/01_raw/Visitas CENS - 2018 a 2023.xlsx"
   load_args:
     sheet_name: "Planilha1"
+
+raw_precos_diesel:
+  type: pandas.ExcelDataSet
+  filepath: "data/01_raw/precos Diesel - 2018 a 2022.xlsx"
+  load_args:
+    sheet_name: "Planilha Final - Valores"
+
+raw_precos_laranja:
+  type: pandas.ExcelDataSet
+  filepath: "data/01_raw/precos medios - Laranja Mesa.xlsx"
+  load_args:
+    sheet_name: "Plan. Final - Preço Laranja Dia"

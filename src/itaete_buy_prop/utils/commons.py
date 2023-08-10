@@ -201,3 +201,74 @@ def seleciona_janelas(janelas: Dict[str, List[datetime.date]],
         _dict[janela] = janelas[janela]
 
     return _dict
+
+
+def calculate_SMA(data: pd.DataFrame,
+        ndays: int,
+        col: str) -> pd.DataFrame:
+
+    COLNAME = f"SMA_{ndays}dias"
+
+    SMA = pd.Series(data[col].rolling(ndays).mean(), name=COLNAME)
+    data = data.join(SMA)
+    return data[["data", COLNAME]]
+
+
+def calculate_EWMA(data: pd.DataFrame,
+         ndays: int,
+         col: str) -> pd.DataFrame:
+
+    COLNAME = f"EWMA_{ndays}dias"
+
+    EMA = pd.Series(data[col].ewm(span=ndays, min_periods=ndays - 1).mean(),
+                    name=COLNAME)
+    data = data.join(EMA)
+    return data[["data", COLNAME]]
+
+
+def calculate_BBANDS(data: pd.DataFrame,
+           window: int,
+           col: str) -> pd.DataFrame:
+    """O mid_bband é igual ao SMA, então não usar os 2 juntos porque vai replicar dado
+    """
+
+    # fiz essa copy porque os dados calculados estavam sendo replicados para outro dataframe que não fazia sentido
+    # não encontrei o motivo real, então fiz esse workaround
+    df = data.copy()
+
+    COLSUFFIX = f"{window}dias"
+
+    MA = df[col].rolling(window=window).mean()
+    SD = df[col].rolling(window=window).std()
+
+    df.loc[:, f"mid_bband_{COLSUFFIX}"] = MA
+    df.loc[:, f"upper_bband_{COLSUFFIX}"] = MA + (2 * SD)
+    df.loc[:, f"lower_bband_{COLSUFFIX}"] = MA - (2 * SD)
+
+    return df[["data",
+                 f"mid_bband_{COLSUFFIX}",
+                 f"upper_bband_{COLSUFFIX}",
+                 f"lower_bband_{COLSUFFIX}"]]
+
+
+def calculate_RSI(data: pd.DataFrame,
+                  periods: int,
+                  col: str) -> pd.DataFrame:
+
+    series = data[col].copy()
+    close_delta = series.diff()
+
+    # Make two series: one for lower closes and one for higher closes
+    up = close_delta.clip(lower=0)
+    down = -1 * close_delta.clip(upper=0)
+
+    ma_up = up.ewm(com = periods - 1, adjust=True, min_periods = periods).mean()
+    ma_down = down.ewm(com = periods - 1, adjust=True, min_periods = periods).mean()
+
+    rsi = ma_up / ma_down
+    rsi = 100 - (100/(1 + rsi))
+    rsi.name = f"rsi_{periods}dias"
+
+    df_rsi = data[["data"]].merge(rsi, left_index=True, right_index=True, how="inner")
+
+    return df_rsi

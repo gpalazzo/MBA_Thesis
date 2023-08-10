@@ -20,7 +20,8 @@ BASE_JOIN_COLS = ["data_inferior", "data_alvo"]
 def yfinance_raw(params: Dict[str, Any]) -> pd.DataFrame:
 
     df = yf.download(tickers=params["tickers"],
-                     start=params["start_date"]) \
+                     start=params["start_date"],
+                     end=params["end_date"]) \
         .reset_index()
 
     return df
@@ -64,6 +65,8 @@ def yfinance_fte(df: pd.DataFrame,
             fteaux_df = techn_ftes_df.merge(biz_ftes_df, on="timestamp", how="inner")
             assert fteaux_df.shape[0] == techn_ftes_df.shape[0] == biz_ftes_df.shape[0], \
                 "Número errado de linhas após join, revisar"
+
+            fteaux_df = fteaux_df.set_index("timestamp").add_prefix("usdbrl_").reset_index()
 
             define_janelas = define_janela_datas(data_inicio=data_inferior,
                                                 qtd_janelas=qtd_janelas,
