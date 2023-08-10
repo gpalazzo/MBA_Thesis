@@ -14,6 +14,6 @@ master_table_params:
     upper: 0.55 #percent
 
   vif_limite: 10 #valor limite para o vif
-  slc_topN_features: 20 #quantidade de features a serem selecionadas
+  slc_topN_features: 30 #quantidade de features a serem selecionadas
 
   sampling_technique: "smote" #válidos: smote, nearmiss

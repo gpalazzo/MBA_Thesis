@@ -9,3 +9,7 @@ fte_usdbrl_yfinance:
 fte_precos_diesel:
   type: pandas.ParquetDataSet
   filepath: "data/04_feature/fte_precos_diesel.parquet"
+
+fte_precos_laranja:
+  type: pandas.ParquetDataSet
+  filepath: "data/04_feature/fte_precos_laranja.parquet"

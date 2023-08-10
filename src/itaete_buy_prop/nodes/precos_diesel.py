@@ -7,6 +7,9 @@ import numpy as np
 import pandas as pd
 
 from itaete_buy_prop.utils import (
+    calculate_BBANDS,
+    calculate_EWMA,
+    calculate_RSI,
     define_janela_datas,
     filtra_data_janelas,
     seleciona_janelas,
@@ -48,11 +51,14 @@ def precos_diesel_fte(df: pd.DataFrame,
 
         else:
             df_biz_ftes = _build_biz_ftes(df=dfaux)
-            df_sma = SMA(data=dfaux, ndays=params["aggregate_window_days"])
-            fteaux_df = reduce(lambda left, right: pd.merge(left, right, on=["data"], how="inner"),
-                               [df_biz_ftes, df_sma, dfaux])
 
-            assert fteaux_df.shape[0] == df_biz_ftes.shape[0] == df_sma.shape[0], \
+            df_oscl_idx = _cria_indices_oscilacao(df=dfaux, janela_agg_dias=params["aggregate_window_days"])
+            df_oscl_idx = df_oscl_idx.set_index("data").add_prefix("diesel_").reset_index()
+
+            fteaux_df = reduce(lambda left, right: pd.merge(left, right, on=["data"], how="inner"),
+                               [df_biz_ftes, df_oscl_idx, dfaux])
+
+            assert fteaux_df.shape[0] == df_biz_ftes.shape[0] == df_oscl_idx.shape[0], \
                 "Número errado de linhas pós join, revisar"
 
             define_janelas = define_janela_datas(data_inicio=data_inferior,
@@ -90,12 +96,27 @@ def _build_biz_ftes(df: pd.DataFrame) -> pd.DataFrame:
     df = df.apply(_build_logreturns, axis=1)
 
     df = df[["preco_medio_diesel"]].cumsum()
-    df = df.reset_index().rename(columns={"preco_medio_diesel": "preco_medio_diesel_cumsum"})
+    df = df.reset_index().rename(columns={"preco_medio_diesel": "diesel_logrets_cumsum"})
 
     return df
 
 
-def SMA(data, ndays):
-    SMA = pd.Series(data["preco_medio_diesel"].rolling(ndays).mean(), name=f"SMA_{ndays}dias")
-    data = data.join(SMA)
-    return data[["data", f"SMA_{ndays}dias"]]
+def _cria_indices_oscilacao(df: pd.DataFrame,
+                            janela_agg_dias: int) -> pd.DataFrame:
+
+    df_ewma = calculate_EWMA(data=df,
+                ndays=janela_agg_dias,
+                col="preco_medio_diesel")
+
+    df_bbands = calculate_BBANDS(data=df,
+                                 window=janela_agg_dias,
+                                 col="preco_medio_diesel")
+
+    df_rsi = calculate_RSI(data=df,
+                        periods=janela_agg_dias,
+                        col="preco_medio_diesel")
+
+    df_final = reduce(lambda left, right: pd.merge(left, right, on=["data"], how="inner"),
+                               [df_ewma, df_bbands, df_rsi])
+
+    return df_final

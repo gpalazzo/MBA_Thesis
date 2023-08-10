@@ -2,7 +2,7 @@
 
 from kedro.pipeline import Pipeline, node, pipeline
 
-from itaete_buy_prop.nodes import precos_laranja_prm
+from itaete_buy_prop.nodes import precos_laranja_fte, precos_laranja_prm
 
 
 def precos_laranja_pipeline() -> pipeline:
@@ -14,13 +14,13 @@ def precos_laranja_pipeline() -> pipeline:
                 outputs="prm_precos_laranja",
                 name="run_precos_laranja_prm"),
 
-            # node(func=precos_laranja_fte,
-            #     inputs=["prm_precos_diesel",
-            #             "label_spine",
-            #             "params:precos_diesel_params",
-            #             "params:spine_params.dt_fat_lookback_window"],
-            #     outputs="fte_precos_diesel",
-            #     name="run_precos_diesel_fte")
+            node(func=precos_laranja_fte,
+                inputs=["prm_precos_laranja",
+                        "label_spine",
+                        "params:precos_laranja_params",
+                        "params:spine_params.dt_fat_lookback_window"],
+                outputs="fte_precos_laranja",
+                name="run_precos_laranja_fte")
         ],
         tags=["precos_laranja_pipeline"]))
 
