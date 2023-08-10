@@ -11,5 +11,6 @@ from .master_table import (
     mt_seleciona_features,
     mt_split_treino_teste,
 )
+from .precos_diesel import precos_diesel_fte, precos_diesel_prm
 from .spine import spine_labeling, spine_preprocessing
 from .yfinance import yfinance_fte, yfinance_prm, yfinance_raw

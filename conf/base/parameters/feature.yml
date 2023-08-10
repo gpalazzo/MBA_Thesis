@@ -1,2 +1,5 @@
 fx_params:
   aggregate_window_days: 30 #quantidade de dias para agregar em janela
+
+precos_diesel_params:
+  aggregate_window_days: 30 #quantidade de dias para agregar em janela

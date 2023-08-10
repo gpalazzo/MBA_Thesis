@@ -5,3 +5,7 @@ fte_analise_fin:
 fte_usdbrl_yfinance:
   type: pandas.ParquetDataSet
   filepath: "data/04_feature/fte_usdbrl_yfinance.parquet"
+
+fte_precos_diesel:
+  type: pandas.ParquetDataSet
+  filepath: "data/04_feature/fte_precos_diesel.parquet"
