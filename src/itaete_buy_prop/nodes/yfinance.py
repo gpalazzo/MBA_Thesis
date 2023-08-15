@@ -5,10 +5,10 @@ from typing import Any, Dict
 import numpy as np
 import pandas as pd
 import yfinance as yf
-from sklearn.feature_selection import VarianceThreshold
 from ta import add_all_ta_features
 
 from itaete_buy_prop.utils import (
+    aplica_threshold_var,
     define_janela_datas,
     filtra_data_janelas,
     seleciona_janelas,
@@ -91,19 +91,6 @@ def yfinance_fte(df: pd.DataFrame,
     return fte_df
 
 
-def _aplica_threshold_var(df: pd.DataFrame) -> pd.DataFrame:
-
-    df = df.set_index("timestamp").fillna(0)
-    thresholder = VarianceThreshold(threshold=5)
-
-    selector = thresholder.fit(df)
-    df = df[df.columns[selector.get_support(indices=True)]]
-
-    df = df.reset_index()
-
-    return df
-
-
 def _build_technical_ftes(df: pd.DataFrame) -> pd.DataFrame:
 
     ACCEPTED_COLS = ("timestamp", "volatility", "trend", "momentum")
@@ -111,7 +98,9 @@ def _build_technical_ftes(df: pd.DataFrame) -> pd.DataFrame:
     fteaux = add_all_ta_features(df, open="open", high="high", low="low", close="close", volume="volume")
 
     fteaux = fteaux[[col for col in fteaux.columns if col.startswith(ACCEPTED_COLS)]]
-    fteaux = _aplica_threshold_var(df=fteaux)
+    fteaux = aplica_threshold_var(df=fteaux,
+                                  date_col="timestamp",
+                                  var_threshold=5)
 
     return fteaux
 

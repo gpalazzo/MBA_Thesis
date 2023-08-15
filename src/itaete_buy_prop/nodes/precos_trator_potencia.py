@@ -1,34 +1,35 @@
 # -*- coding: utf-8 -*-
 import math
 from functools import reduce
-from typing import Dict
+from typing import Dict, List
 
-import numpy as np
 import pandas as pd
 
 from itaete_buy_prop.utils import (
+    aplica_threshold_var,
     cria_indices_oscilacao,
     define_janela_datas,
     filtra_data_janelas,
     seleciona_janelas,
+    string_normalizer,
 )
 
 BASE_JOIN_COLS = ["data_inferior", "data_alvo"]
 DATE_COL = "data"
 
 
-def precos_diesel_prm(df: pd.DataFrame) -> pd.DataFrame:
+def precos_trator_potencia_prm(df: pd.DataFrame, params: Dict[str, List[str]]) -> pd.DataFrame:
 
-    df = df[["Data da Coleta", "Valor de Venda"]] \
-            .rename(columns={"Data da Coleta": DATE_COL,
-                             "Valor de Venda": "preco_medio_diesel"})
+    cols = tuple(params["potencia_trator"] + [DATE_COL])
+    df = df[[col for col in df.columns if col.startswith(cols)]]
 
+    df.columns = [string_normalizer(col) for col in df.columns]
     df.loc[:, DATE_COL] = df[DATE_COL].dt.date
 
     return df
 
 
-def precos_diesel_fte(df: pd.DataFrame,
+def precos_trator_potencia_fte(df: pd.DataFrame,
                       spine: pd.DataFrame,
                       params: Dict[str, int],
                       spine_lookback_days: int) -> pd.DataFrame:
@@ -49,19 +50,19 @@ def precos_diesel_fte(df: pd.DataFrame,
             continue
 
         else:
-            df_biz_ftes = _build_biz_ftes(df=dfaux)
+            dfs_inner_loop = []
+            for col in dfaux.set_index(DATE_COL).columns:
+                _df = dfaux[[DATE_COL] + [col]]
+                df_oscl_idx = cria_indices_oscilacao(df=_df,
+                                                      janela_agg_dias=tamanho_janela_dias,
+                                                      value_col=col,
+                                                      date_col=DATE_COL)
+                df_oscl_idx = df_oscl_idx.set_index(DATE_COL).add_prefix(f"{col}_")
+                dfs_inner_loop.append(df_oscl_idx)
 
-            df_oscl_idx = cria_indices_oscilacao(df=dfaux,
-                                                 janela_agg_dias=tamanho_janela_dias,
-                                                 value_col="preco_medio_diesel",
-                                                 date_col=DATE_COL)
-            df_oscl_idx = df_oscl_idx.set_index(DATE_COL).add_prefix("diesel_").reset_index()
-
-            fteaux_df = reduce(lambda left, right: pd.merge(left, right, on=[DATE_COL], how="inner"),
-                               [df_biz_ftes, df_oscl_idx, dfaux])
-
-            assert fteaux_df.shape[0] == df_biz_ftes.shape[0] == df_oscl_idx.shape[0], \
-                "Número errado de linhas pós join, revisar"
+            fteaux_df = reduce(lambda left, right: pd.merge(left, right, left_index=True, right_index=True, how="inner"),
+                               dfs_inner_loop)
+            fteaux_df = fteaux_df.reset_index()
 
             define_janelas = define_janela_datas(data_inicio=data_inferior,
                                                 qtd_janelas=qtd_janelas,
@@ -78,26 +79,10 @@ def precos_diesel_fte(df: pd.DataFrame,
             fte_df = pd.concat([fte_df, fteaux_df])
 
     fte_df = fte_df.fillna(0)
+    fte_df = aplica_threshold_var(df=fte_df, date_col=BASE_JOIN_COLS, var_threshold=5)
 
     assert fte_df.isnull().sum().sum() == 0, "Nulos na feature, revisar"
     assert fte_df.shape[0] == fte_df[BASE_JOIN_COLS].drop_duplicates().shape[0], \
                 "Feature yfinance duplicada, revisar"
 
     return fte_df
-
-
-def _build_biz_ftes(df: pd.DataFrame) -> pd.DataFrame:
-
-    def _build_logreturns(col: pd.Series) -> pd.Series:
-        return np.log(1 + col)
-
-    df = df[[DATE_COL, "preco_medio_diesel"]]
-
-    df = df.set_index(DATE_COL).sort_index()
-    df = df.pct_change().fillna(0)
-    df = df.apply(_build_logreturns, axis=1)
-
-    df = df[["preco_medio_diesel"]].cumsum()
-    df = df.reset_index().rename(columns={"preco_medio_diesel": "diesel_logrets_cumsum"})
-
-    return df

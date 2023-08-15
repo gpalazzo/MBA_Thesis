@@ -14,6 +14,10 @@ from .master_table import (
 )
 from .precos_diesel import precos_diesel_fte, precos_diesel_prm
 from .precos_laranja import precos_laranja_fte, precos_laranja_prm
+from .precos_trator_potencia import (
+    precos_trator_potencia_fte,
+    precos_trator_potencia_prm,
+)
 from .selic import selic_fte, selic_prm
 from .spine import spine_labeling, spine_preprocessing
 from .yfinance import yfinance_fte, yfinance_prm, yfinance_raw

@@ -14,6 +14,7 @@ from itaete_buy_prop.pipelines import (
     master_table_pipeline,
     precos_diesel_pipeline,
     precos_laranja_pipeline,
+    precos_trator_potencia_pipeline,
     selic_pipeline,
     spine_pipeline,
     yfinance_pipeline,
@@ -35,6 +36,7 @@ def register_pipelines() -> Dict[str, Pipeline]:
                                      precos_laranja_pipeline() +
                                      ipca_pipeline() +
                                      selic_pipeline() +
+                                     precos_trator_potencia_pipeline() +
                                      spine_pipeline() +
                                      master_table_pipeline() +
                                      logreg_pipeline()])}
