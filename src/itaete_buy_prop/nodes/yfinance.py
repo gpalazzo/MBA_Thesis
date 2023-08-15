@@ -5,10 +5,9 @@ from typing import Any, Dict
 import numpy as np
 import pandas as pd
 import yfinance as yf
-from ta import add_all_ta_features
 
 from itaete_buy_prop.utils import (
-    aplica_threshold_var,
+    cria_indices_oscilacao,
     define_janela_datas,
     filtra_data_janelas,
     seleciona_janelas,
@@ -59,11 +58,14 @@ def yfinance_fte(df: pd.DataFrame,
             continue
 
         else:
-            techn_ftes_df = _build_technical_ftes(df=dfaux)
+            oscl_idx_df = cria_indices_oscilacao(df=dfaux,
+                                                 janela_agg_dias=30,
+                                                 value_col="close",
+                                                 date_col="timestamp")
             biz_ftes_df = _build_biz_ftes(df=dfaux)
 
-            fteaux_df = techn_ftes_df.merge(biz_ftes_df, on="timestamp", how="inner")
-            assert fteaux_df.shape[0] == techn_ftes_df.shape[0] == biz_ftes_df.shape[0], \
+            fteaux_df = oscl_idx_df.merge(biz_ftes_df, on="timestamp", how="inner")
+            assert fteaux_df.shape[0] == oscl_idx_df.shape[0] == biz_ftes_df.shape[0], \
                 "Número errado de linhas após join, revisar"
 
             fteaux_df = fteaux_df.set_index("timestamp").add_prefix("usdbrl_").reset_index()
@@ -71,7 +73,7 @@ def yfinance_fte(df: pd.DataFrame,
             define_janelas = define_janela_datas(data_inicio=data_inferior,
                                                 qtd_janelas=qtd_janelas,
                                                 tamanho_janela_dias=tamanho_janela_dias)
-            define_janelas = seleciona_janelas(janelas=define_janelas, slc_janelas_numero=[1, 12])
+            define_janelas = seleciona_janelas(janelas=define_janelas, slc_janelas_numero=[2, 12])
 
             fteaux_df = filtra_data_janelas(df=fteaux_df,
                                         date_col_name="timestamp",
@@ -89,20 +91,6 @@ def yfinance_fte(df: pd.DataFrame,
                 "Feature yfinance duplicada, revisar"
 
     return fte_df
-
-
-def _build_technical_ftes(df: pd.DataFrame) -> pd.DataFrame:
-
-    ACCEPTED_COLS = ("timestamp", "volatility", "trend", "momentum")
-
-    fteaux = add_all_ta_features(df, open="open", high="high", low="low", close="close", volume="volume")
-
-    fteaux = fteaux[[col for col in fteaux.columns if col.startswith(ACCEPTED_COLS)]]
-    fteaux = aplica_threshold_var(df=fteaux,
-                                  date_col="timestamp",
-                                  var_threshold=5)
-
-    return fteaux
 
 
 def _build_biz_ftes(df: pd.DataFrame) -> pd.DataFrame:
