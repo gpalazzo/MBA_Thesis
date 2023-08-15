@@ -43,4 +43,6 @@ https://kedro.readthedocs.io/en/stable/kedro_project_setup/settings.html."""
 MASTER_TABLE_DATASETS = ["fte_analise_fin",
                         "fte_usdbrl_yfinance",
                         "fte_precos_diesel",
-                        "fte_precos_laranja"]
+                        "fte_precos_laranja",
+                        "fte_ipca",
+                        "fte_selic"]

@@ -25,3 +25,11 @@ prm_precos_diesel:
 prm_precos_laranja:
   type: pandas.ParquetDataSet
   filepath: "data/03_primary/prm_precos_laranja.parquet"
+
+prm_ipca:
+  type: pandas.ParquetDataSet
+  filepath: "data/03_primary/prm_ipca.parquet"
+
+prm_selic:
+  type: pandas.ParquetDataSet
+  filepath: "data/03_primary/prm_selic.parquet"
