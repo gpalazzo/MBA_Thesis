@@ -6,3 +6,6 @@ precos_diesel_params:
 
 precos_laranja_params:
   aggregate_window_days: 30 #quantidade de dias para agregar em janela
+
+precos_trator_potencia_params:
+  aggregate_window_days: 30 #quantidade de dias para agregar em janela

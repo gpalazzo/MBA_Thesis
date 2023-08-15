@@ -5,3 +5,11 @@ funil_vendas_params:
 selic_params:
   qtd_dias_uteis_mes: 1
   qtd_dias_uteis_ano: 252
+
+trator_potencia_params:
+  potencia_trator:
+    - 5060E
+    - 5070E
+    - 5078E
+    - 5080E
+    - 5090E

@@ -33,3 +33,7 @@ prm_ipca:
 prm_selic:
   type: pandas.ParquetDataSet
   filepath: "data/03_primary/prm_selic.parquet"
+
+prm_preco_trator_potencia:
+  type: pandas.ParquetDataSet
+  filepath: "data/03_primary/prm_preco_trator_potencia.parquet"

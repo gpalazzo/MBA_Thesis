@@ -2,10 +2,12 @@
 import re
 import unicodedata
 from datetime import datetime, timedelta
-from typing import Any, Dict, List
+from functools import reduce
+from typing import Any, Dict, List, Union
 
 import numpy as np
 import pandas as pd
+from sklearn.feature_selection import VarianceThreshold
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import GridSearchCV, RepeatedStratifiedKFold
@@ -205,30 +207,33 @@ def seleciona_janelas(janelas: Dict[str, List[datetime.date]],
 
 def calculate_SMA(data: pd.DataFrame,
         ndays: int,
-        col: str) -> pd.DataFrame:
+        value_col: str,
+        date_col: str) -> pd.DataFrame:
 
     COLNAME = f"SMA_{ndays}dias"
 
-    SMA = pd.Series(data[col].rolling(ndays).mean(), name=COLNAME)
+    SMA = pd.Series(data[value_col].rolling(ndays).mean(), name=COLNAME)
     data = data.join(SMA)
-    return data[["data", COLNAME]]
+    return data[[date_col, COLNAME]]
 
 
 def calculate_EWMA(data: pd.DataFrame,
          ndays: int,
-         col: str) -> pd.DataFrame:
+         value_col: str,
+         date_col: str) -> pd.DataFrame:
 
     COLNAME = f"EWMA_{ndays}dias"
 
-    EMA = pd.Series(data[col].ewm(span=ndays, min_periods=ndays - 1).mean(),
+    EMA = pd.Series(data[value_col].ewm(span=ndays, min_periods=ndays - 1).mean(),
                     name=COLNAME)
     data = data.join(EMA)
-    return data[["data", COLNAME]]
+    return data[[date_col, COLNAME]]
 
 
 def calculate_BBANDS(data: pd.DataFrame,
            window: int,
-           col: str) -> pd.DataFrame:
+           value_col: str,
+           date_col: str) -> pd.DataFrame:
     """O mid_bband é igual ao SMA, então não usar os 2 juntos porque vai replicar dado
     """
 
@@ -238,14 +243,14 @@ def calculate_BBANDS(data: pd.DataFrame,
 
     COLSUFFIX = f"{window}dias"
 
-    MA = df[col].rolling(window=window).mean()
-    SD = df[col].rolling(window=window).std()
+    MA = df[value_col].rolling(window=window).mean()
+    SD = df[value_col].rolling(window=window).std()
 
     df.loc[:, f"mid_bband_{COLSUFFIX}"] = MA
     df.loc[:, f"upper_bband_{COLSUFFIX}"] = MA + (2 * SD)
     df.loc[:, f"lower_bband_{COLSUFFIX}"] = MA - (2 * SD)
 
-    return df[["data",
+    return df[[date_col,
                  f"mid_bband_{COLSUFFIX}",
                  f"upper_bband_{COLSUFFIX}",
                  f"lower_bband_{COLSUFFIX}"]]
@@ -253,9 +258,10 @@ def calculate_BBANDS(data: pd.DataFrame,
 
 def calculate_RSI(data: pd.DataFrame,
                   periods: int,
-                  col: str) -> pd.DataFrame:
+                  value_col: str,
+                  date_col: str) -> pd.DataFrame:
 
-    series = data[col].copy()
+    series = data[value_col].copy()
     close_delta = series.diff()
 
     # Make two series: one for lower closes and one for higher closes
@@ -269,6 +275,47 @@ def calculate_RSI(data: pd.DataFrame,
     rsi = 100 - (100/(1 + rsi))
     rsi.name = f"rsi_{periods}dias"
 
-    df_rsi = data[["data"]].merge(rsi, left_index=True, right_index=True, how="inner")
+    df_rsi = data[[date_col]].merge(rsi, left_index=True, right_index=True, how="inner")
 
     return df_rsi
+
+
+def cria_indices_oscilacao(df: pd.DataFrame,
+                            janela_agg_dias: int,
+                            value_col: str,
+                            date_col: str) -> pd.DataFrame:
+
+    df_ewma = calculate_EWMA(data=df,
+                ndays=janela_agg_dias,
+                value_col=value_col,
+                date_col=date_col)
+
+    df_bbands = calculate_BBANDS(data=df,
+                                 window=janela_agg_dias,
+                                 value_col=value_col,
+                                 date_col=date_col)
+
+    df_rsi = calculate_RSI(data=df,
+                        periods=janela_agg_dias,
+                        value_col=value_col,
+                        date_col=date_col)
+
+    df_final = reduce(lambda left, right: pd.merge(left, right, on=[date_col], how="inner"),
+                               [df_ewma, df_bbands, df_rsi])
+
+    return df_final
+
+
+def aplica_threshold_var(df: pd.DataFrame,
+                         date_col: Union[str, List[str]],
+                         var_threshold: float) -> pd.DataFrame:
+
+    df = df.set_index(date_col).fillna(0)
+    thresholder = VarianceThreshold(threshold=var_threshold)
+
+    selector = thresholder.fit(df)
+    df = df[df.columns[selector.get_support(indices=True)]]
+
+    df = df.reset_index()
+
+    return df

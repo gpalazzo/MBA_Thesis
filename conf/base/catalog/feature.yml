@@ -21,3 +21,7 @@ fte_ipca:
 fte_selic:
   type: pandas.ParquetDataSet
   filepath: "data/04_feature/fte_selic.parquet"
+
+fte_preco_trator_potencia:
+  type: pandas.ParquetDataSet
+  filepath: "data/04_feature/fte_preco_trator_potencia.parquet"

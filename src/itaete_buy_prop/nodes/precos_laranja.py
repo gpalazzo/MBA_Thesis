@@ -7,9 +7,7 @@ import numpy as np
 import pandas as pd
 
 from itaete_buy_prop.utils import (
-    calculate_BBANDS,
-    calculate_EWMA,
-    calculate_RSI,
+    cria_indices_oscilacao,
     define_janela_datas,
     filtra_data_janelas,
     seleciona_janelas,
@@ -17,6 +15,7 @@ from itaete_buy_prop.utils import (
 )
 
 BASE_JOIN_COLS = ["data_inferior", "data_alvo"]
+DATE_COL = "data"
 
 
 def precos_laranja_prm(df: pd.DataFrame) -> pd.DataFrame:
@@ -24,7 +23,7 @@ def precos_laranja_prm(df: pd.DataFrame) -> pd.DataFrame:
     df = df[["Data", "Preço"]]
     df.columns = [string_normalizer(col) for col in df.columns]
     df = df.rename(columns={"preco": "preco_medio_laranja"})
-    df.loc[:, "data"] = df["data"].dt.date
+    df.loc[:, DATE_COL] = df[DATE_COL].dt.date
 
     return df
 
@@ -43,7 +42,7 @@ def precos_laranja_fte(df: pd.DataFrame,
 
     for data_inferior, data_alvo in zip(spine["data_inferior"], spine["data_visita"]):
 
-        dfaux = df[df["data"].between(data_inferior, data_alvo)]
+        dfaux = df[df[DATE_COL].between(data_inferior, data_alvo)]
 
         # se dataframe não tiver dado para o cliente na janela, então ignora o código abaixo
         if dfaux.empty:
@@ -52,10 +51,13 @@ def precos_laranja_fte(df: pd.DataFrame,
         else:
             df_biz_ftes = _build_biz_ftes(df=dfaux)
 
-            df_oscl_idx = _cria_indices_oscilacao(df=dfaux, janela_agg_dias=params["aggregate_window_days"])
-            df_oscl_idx = df_oscl_idx.set_index("data").add_prefix("laranja_").reset_index()
+            df_oscl_idx = cria_indices_oscilacao(df=dfaux,
+                                                 janela_agg_dias=params["aggregate_window_days"],
+                                                 value_col="preco_medio_laranja",
+                                                 date_col=DATE_COL)
+            df_oscl_idx = df_oscl_idx.set_index(DATE_COL).add_prefix("laranja_").reset_index()
 
-            fteaux_df = reduce(lambda left, right: pd.merge(left, right, on=["data"], how="inner"),
+            fteaux_df = reduce(lambda left, right: pd.merge(left, right, on=[DATE_COL], how="inner"),
                                [df_biz_ftes, df_oscl_idx, dfaux])
 
             assert fteaux_df.shape[0] == df_biz_ftes.shape[0] == df_oscl_idx.shape[0], \
@@ -67,7 +69,7 @@ def precos_laranja_fte(df: pd.DataFrame,
             define_janelas = seleciona_janelas(janelas=define_janelas, slc_janelas_numero=[1, 12])
 
             fteaux_df = filtra_data_janelas(df=fteaux_df,
-                                        date_col_name="data",
+                                        date_col_name=DATE_COL,
                                         janelas=define_janelas,
                                         tipo_janela="right")
 
@@ -89,9 +91,9 @@ def _build_biz_ftes(df: pd.DataFrame) -> pd.DataFrame:
     def _build_logreturns(col: pd.Series) -> pd.Series:
         return np.log(1 + col)
 
-    df = df[["data", "preco_medio_laranja"]]
+    df = df[[DATE_COL, "preco_medio_laranja"]]
 
-    df = df.set_index("data").sort_index()
+    df = df.set_index(DATE_COL).sort_index()
     df = df.pct_change().fillna(0)
     df = df.apply(_build_logreturns, axis=1)
 
@@ -99,24 +101,3 @@ def _build_biz_ftes(df: pd.DataFrame) -> pd.DataFrame:
     df = df.reset_index().rename(columns={"preco_medio_laranja": "laranja_logrets_cumsum"})
 
     return df
-
-
-def _cria_indices_oscilacao(df: pd.DataFrame,
-                            janela_agg_dias: int) -> pd.DataFrame:
-
-    df_ewma = calculate_EWMA(data=df,
-                ndays=janela_agg_dias,
-                col="preco_medio_laranja")
-
-    df_bbands = calculate_BBANDS(data=df,
-                                 window=janela_agg_dias,
-                                 col="preco_medio_laranja")
-
-    df_rsi = calculate_RSI(data=df,
-                        periods=janela_agg_dias,
-                        col="preco_medio_laranja")
-
-    df_final = reduce(lambda left, right: pd.merge(left, right, on=["data"], how="inner"),
-                               [df_ewma, df_bbands, df_rsi])
-
-    return df_final
