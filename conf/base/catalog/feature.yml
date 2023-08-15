@@ -13,3 +13,11 @@ fte_precos_diesel:
 fte_precos_laranja:
   type: pandas.ParquetDataSet
   filepath: "data/04_feature/fte_precos_laranja.parquet"
+
+fte_ipca:
+  type: pandas.ParquetDataSet
+  filepath: "data/04_feature/fte_ipca.parquet"
+
+fte_selic:
+  type: pandas.ParquetDataSet
+  filepath: "data/04_feature/fte_selic.parquet"

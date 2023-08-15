@@ -37,3 +37,15 @@ raw_precos_laranja:
   filepath: "data/01_raw/precos medios - Laranja Mesa.xlsx"
   load_args:
     sheet_name: "Plan. Final - Preço Laranja Dia"
+
+raw_ipca:
+  type: pandas.ExcelDataSet
+  filepath: "data/01_raw/historico_inflacao.xlsx"
+  load_args:
+    sheet_name: "Dados de Inflação"
+
+raw_selic:
+  type: pandas.ExcelDataSet
+  filepath: "data/01_raw/historico_selic.xlsx"
+  load_args:
+    sheet_name: "Planilha1"

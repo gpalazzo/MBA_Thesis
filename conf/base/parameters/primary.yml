@@ -1,3 +1,7 @@
 funil_vendas_params:
   status_pedidos: #status inválidos
     - desistiu_da_compra
+
+selic_params:
+  qtd_dias_uteis_mes: 1
+  qtd_dias_uteis_ano: 252
