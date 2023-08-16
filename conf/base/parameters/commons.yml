@@ -2,3 +2,11 @@ clientes_params:
   cultura: "laranja"
   produto: "tratores"
   empresa: "jales"
+
+trator_potencia_params:
+  potencia_trator:
+    - 5060E
+    - 5070E
+    - 5078E
+    - 5080E
+    - 5090E

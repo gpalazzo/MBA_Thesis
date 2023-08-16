@@ -55,3 +55,9 @@ raw_preco_trator_potencia:
   filepath: "data/01_raw/preco_trator_potencia.xlsx"
   load_args:
     sheet_name: "Planilha Final - Preço por CV"
+
+raw_preco_trator_cxlaranja:
+  type: pandas.ExcelDataSet
+  filepath: "data/01_raw/preco_trator_cxLaranja.xlsx"
+  load_args:
+    sheet_name: "Planilha Final - CXS por Trator"

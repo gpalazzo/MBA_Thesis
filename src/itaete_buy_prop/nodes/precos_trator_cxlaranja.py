@@ -18,7 +18,7 @@ BASE_JOIN_COLS = ["data_inferior", "data_alvo"]
 DATE_COL = "data"
 
 
-def precos_trator_potencia_prm(df: pd.DataFrame, params: Dict[str, List[str]]) -> pd.DataFrame:
+def precos_trator_cxlaranja_prm(df: pd.DataFrame, params: Dict[str, List[str]]) -> pd.DataFrame:
 
     cols = tuple(params["potencia_trator"] + [DATE_COL])
     df = df[[col for col in df.columns if col.startswith(cols)]]
@@ -29,7 +29,7 @@ def precos_trator_potencia_prm(df: pd.DataFrame, params: Dict[str, List[str]]) -
     return df
 
 
-def precos_trator_potencia_fte(df: pd.DataFrame,
+def precos_trator_cxlaranja_fte(df: pd.DataFrame,
                       spine: pd.DataFrame,
                       params: Dict[str, int],
                       spine_lookback_days: int) -> pd.DataFrame:
@@ -57,7 +57,7 @@ def precos_trator_potencia_fte(df: pd.DataFrame,
                                                       janela_agg_dias=tamanho_janela_dias,
                                                       value_col=col,
                                                       date_col=DATE_COL)
-                df_oscl_idx = df_oscl_idx.set_index(DATE_COL).add_prefix(f"px_trator_pot_{col}_")
+                df_oscl_idx = df_oscl_idx.set_index(DATE_COL).add_prefix(f"px_trator_cxlrj_{col}_")
                 dfs_inner_loop.append(df_oscl_idx)
 
             fteaux_df = reduce(lambda left, right: pd.merge(left, right, left_index=True, right_index=True, how="inner"),
