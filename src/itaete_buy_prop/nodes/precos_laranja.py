@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 
 from itaete_buy_prop.utils import (
-    cria_indices_oscilacao,
+    calculate_SMA,
     define_janela_datas,
     filtra_data_janelas,
     seleciona_janelas,
@@ -51,10 +51,14 @@ def precos_laranja_fte(df: pd.DataFrame,
         else:
             df_biz_ftes = _build_biz_ftes(df=dfaux)
 
-            df_oscl_idx = cria_indices_oscilacao(df=dfaux,
-                                                 janela_agg_dias=params["aggregate_window_days"],
-                                                 value_col="preco_medio_laranja",
-                                                 date_col=DATE_COL)
+            # df_oscl_idx = cria_indices_oscilacao(df=dfaux,
+            #                                      janela_agg_dias=params["aggregate_window_days"],
+            #                                      value_col="preco_medio_laranja",
+            #                                      date_col=DATE_COL)
+            df_oscl_idx = calculate_SMA(data=dfaux,
+                                        ndays=params["aggregate_window_days"],
+                                        value_col="preco_medio_laranja",
+                                        date_col=DATE_COL)
             df_oscl_idx = df_oscl_idx.set_index(DATE_COL).add_prefix("laranja_").reset_index()
 
             fteaux_df = reduce(lambda left, right: pd.merge(left, right, on=[DATE_COL], how="inner"),
@@ -66,7 +70,7 @@ def precos_laranja_fte(df: pd.DataFrame,
             define_janelas = define_janela_datas(data_inicio=data_inferior,
                                                 qtd_janelas=qtd_janelas,
                                                 tamanho_janela_dias=tamanho_janela_dias)
-            define_janelas = seleciona_janelas(janelas=define_janelas, slc_janelas_numero=[1, 12])
+            define_janelas = seleciona_janelas(janelas=define_janelas, slc_janelas_numero=[1, 6, 12])
 
             fteaux_df = filtra_data_janelas(df=fteaux_df,
                                         date_col_name=DATE_COL,

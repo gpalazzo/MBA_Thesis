@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 
 from itaete_buy_prop.utils import (
-    cria_indices_oscilacao,
+    calculate_SMA,
     define_janela_datas,
     filtra_data_janelas,
     seleciona_janelas,
@@ -51,10 +51,14 @@ def precos_diesel_fte(df: pd.DataFrame,
         else:
             df_biz_ftes = _build_biz_ftes(df=dfaux)
 
-            df_oscl_idx = cria_indices_oscilacao(df=dfaux,
-                                                 janela_agg_dias=tamanho_janela_dias,
-                                                 value_col="preco_medio_diesel",
-                                                 date_col=DATE_COL)
+            # df_oscl_idx = cria_indices_oscilacao(df=dfaux,
+            #                                      janela_agg_dias=tamanho_janela_dias,
+            #                                      value_col="preco_medio_diesel",
+            #                                      date_col=DATE_COL)
+            df_oscl_idx = calculate_SMA(data=dfaux,
+                                        ndays=tamanho_janela_dias,
+                                        value_col="preco_medio_diesel",
+                                        date_col=DATE_COL)
             df_oscl_idx = df_oscl_idx.set_index(DATE_COL).add_prefix("diesel_").reset_index()
 
             fteaux_df = reduce(lambda left, right: pd.merge(left, right, on=[DATE_COL], how="inner"),
