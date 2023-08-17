@@ -1,91 +1,16 @@
-# RESULTADOS
-# features: ["fte_analise_fin", "fte_usdbrl_yfinance"]
-# ------
+# MELHOR RESULTADO
 
-# model_params_extra:
-#   solver: "saga"
-#   penalty: "l1"
-#   tol: 0.001
-#   C: 339.3221771895323
-#   class_weight: "balanced"
-#   fit_intercept: True
-#   max_iter: 100
-
-#   AUC = 0.647
-
-#               precision    recall  f1-score   support
-
-#            0       0.89      0.54      0.67       143
-#            1       0.32      0.76      0.45        41
-
-#     accuracy                           0.59       184
-#    macro avg       0.60      0.65      0.56       184
-# weighted avg       0.76      0.59      0.62       184
-
-# array([[0.41847826, 0.35869565],
-#        [0.05434783, 0.16847826]])
-
-# ------------------------
-
-# features: ["fte_analise_fin", "fte_usdbrl_yfinance", "fte_precos_diesel"]
-# ------
-
-# model_params_extra:
-#   solver: "saga"
-#   penalty: "l1"
-#   tol: 0.0001
-#   C: 494.1713361323828
-#   class_weight: "balanced"
-#   fit_intercept: True
-#   max_iter: 100
-
-#   AUC = 0.707
-
-#               precision    recall  f1-score   support
-
-#            0       0.93      0.66      0.77       202
-#            1       0.31      0.75      0.43        40
-
-#     accuracy                           0.68       242
-#    macro avg       0.62      0.71      0.60       242
-# weighted avg       0.83      0.68      0.72       242
-
-# array([[0.55371901, 0.28099174],
-#        [0.04132231, 0.12396694]])
-
-# ------------------------
-
-# features: ["fte_analise_fin", "fte_usdbrl_yfinance", "fte_precos_diesel", "fte_precos_laranja"]
-# ------
-
-# model_params_extra:
-#   solver: "saga"
-#   penalty: "l1"
-#   tol: 0.0001
-#   C: 0.5689866029018293
-#   class_weight: "balanced"
-#   fit_intercept: True
-#   max_iter: 100
-
-#   AUC = 0.719
-
-#               precision    recall  f1-score   support
-
-#            0       0.94      0.64      0.76       202
-#            1       0.30      0.80      0.44        40
-
-#     accuracy                           0.67       242
-#    macro avg       0.62      0.72      0.60       242
-# weighted avg       0.84      0.67      0.71       242
-
-# array([[0.53305785, 0.30165289],
-#        [0.03305785, 0.1322314 ]])
-
-# ------------------------
-
-# features: ["fte_analise_fin", "fte_usdbrl_yfinance", "fte_precos_diesel",
+# features dataset: ["fte_analise_fin", "fte_usdbrl_yfinance", "fte_precos_diesel",
 #           "fte_precos_laranja", "fte_ipca", "fte_selic", "fte_preco_trator_potencia"]
-# ------
+
+# features final: ['tempo_medio_dias_compras', 'valor_total_compras',
+      #  'dif_dias_ultima_compra', 'janela6__usdbrl_pxclose_cumsum',
+      #  'janela6__usdbrl_pxhighlow_diff_cumsum',
+      #  'janela12__usdbrl_pxclose_cumsum',
+      #  'janela12__usdbrl_pxhighlow_diff_cumsum',
+      #  'janela1__usdbrl_pxclose_cumsum',
+      #  'janela1__usdbrl_pxhighlow_diff_cumsum',
+      #  'janela1__diesel_logrets_cumsum']
 
 # model_params_extra:
 # {'C': 0.0020235896477251557,

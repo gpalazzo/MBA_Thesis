@@ -6,8 +6,10 @@ from kedro.pipeline import Pipeline, pipeline
 
 from itaete_buy_prop.pipelines import (
     analise_fin_pipeline,
+    area_prod_cliente_pipeline,
     cen_visitas_pipeline,
     clientes_pipeline,
+    features_producao_pipeline,
     funil_vendas_pipeline,
     ipca_pipeline,
     logreg_pipeline,
@@ -15,6 +17,7 @@ from itaete_buy_prop.pipelines import (
     precos_diesel_pipeline,
     precos_laranja_pipeline,
     precos_trator_potencia_pipeline,
+    producao_laranja_sp_pipeline,
     selic_pipeline,
     spine_pipeline,
     yfinance_pipeline,
@@ -37,6 +40,9 @@ def register_pipelines() -> Dict[str, Pipeline]:
                                      ipca_pipeline() +
                                      selic_pipeline() +
                                      precos_trator_potencia_pipeline() +
+                                     producao_laranja_sp_pipeline() +
+                                     area_prod_cliente_pipeline() +
+                                     features_producao_pipeline() +
                                      spine_pipeline() +
                                      master_table_pipeline() +
                                      logreg_pipeline()])}

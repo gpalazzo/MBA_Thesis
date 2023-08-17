@@ -55,3 +55,15 @@ raw_preco_trator_potencia:
   filepath: "data/01_raw/preco_trator_potencia.xlsx"
   load_args:
     sheet_name: "Planilha Final - Preço por CV"
+
+raw_prod_laranja_sp:
+  type: pandas.ExcelDataSet
+  filepath: "data/01_raw/Produtividade e producao Laranja - SP - Final.xlsx"
+  load_args:
+    sheet_name: "Planilha Final Produção"
+
+raw_area_prod_cliente:
+  type: pandas.ExcelDataSet
+  filepath: "data/01_raw/Area de Producao de Laranja por Cliente - Itaete Jales.xlsx"
+  load_args:
+    sheet_name: "Planilha1"
