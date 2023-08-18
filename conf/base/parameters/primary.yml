@@ -8,11 +8,7 @@ selic_params:
 
 trator_potencia_params:
   potencia_trator:
-    - 5060E
-    - 5070E
-    - 5078E
-    - 5080E
-    - 5090E
+    - 5090E Cab 9X3
 
 producao_laranja_sp_params:
   local: "noroeste_paulista"
