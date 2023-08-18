@@ -53,15 +53,13 @@ def precos_trator_potencia_fte(df: pd.DataFrame,
             dfs_inner_loop = []
             for col in dfaux.set_index(DATE_COL).columns:
                 _df = dfaux[[DATE_COL] + [col]]
-                # df_oscl_idx = cria_indices_oscilacao(df=_df,
-                #                                       janela_agg_dias=tamanho_janela_dias,
-                #                                       value_col=col,
-                #                                       date_col=DATE_COL)
+
                 df_oscl_idx = calculate_SMA(data=_df,
                                             ndays=tamanho_janela_dias,
                                             value_col=col,
                                             date_col=DATE_COL)
-                df_oscl_idx = df_oscl_idx.set_index(DATE_COL).add_prefix(f"{col}_")
+
+                df_oscl_idx = df_oscl_idx.set_index(DATE_COL).add_prefix(f"px_trator_pot_{col}_")
                 dfs_inner_loop.append(df_oscl_idx)
 
             fteaux_df = reduce(lambda left, right: pd.merge(left, right, left_index=True, right_index=True, how="inner"),
