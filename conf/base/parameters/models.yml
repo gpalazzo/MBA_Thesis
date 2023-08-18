@@ -4,13 +4,15 @@
 #           "fte_precos_laranja", "fte_ipca", "fte_selic", "fte_preco_trator_potencia",
 #           "fte_producao", "fte_custo"]
 
-# features final: ['tempo_medio_dias_compras', 'dif_dias_ultima_compra', 'receita_media',
-      #  'custo_medio', 'janela6__usdbrl_pxclose_cumsum',
-      #  'janela6__usdbrl_pxhighlow_diff_cumsum',
+# features final: ['tempo_medio_dias_compras', 'valor_total_compras',
+      #  'dif_dias_ultima_compra', 'receita_media', 'custo_medio',
       #  'janela12__usdbrl_pxclose_cumsum',
       #  'janela12__usdbrl_pxhighlow_diff_cumsum',
+      #  'janela6__usdbrl_pxclose_cumsum',
+      #  'janela6__usdbrl_pxhighlow_diff_cumsum',
       #  'janela1__usdbrl_pxclose_cumsum',
-      #  'janela1__usdbrl_pxhighlow_diff_cumsum']
+      #  'janela1__usdbrl_pxhighlow_diff_cumsum',
+      #  'janela1__diesel_logrets_cumsum']
 
 # model_params_extra:
 # {'C': 0.009102981779915217,
@@ -29,18 +31,18 @@
 #  'verbose': 0,
 #  'warm_start': False}
 
-#   AUC = 0.877
+#   AUC = 0.865
 
 #               precision    recall  f1-score   support
 
-#            0       0.94      0.95      0.95        87
-#            1       0.83      0.80      0.82        25
+#            0       0.94      0.93      0.94        87
+#            1       0.77      0.80      0.78        25
 
-#     accuracy                           0.92       112
-#    macro avg       0.89      0.88      0.88       112
-# weighted avg       0.92      0.92      0.92       112
+#     accuracy                           0.90       112
+#    macro avg       0.86      0.87      0.86       112
+# weighted avg       0.90      0.90      0.90       112
 
-# array([[0.74107143, 0.03571429],
+# array([[0.72321429, 0.05357143],
 #        [0.04464286, 0.17857143]])
 
 logreg_params:
