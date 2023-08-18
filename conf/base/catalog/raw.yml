@@ -67,3 +67,9 @@ raw_area_prod_cliente:
   filepath: "data/01_raw/Area de Producao de Laranja por Cliente - Itaete Jales.xlsx"
   load_args:
     sheet_name: "Planilha1"
+
+raw_frota_clientes:
+  type: pandas.ExcelDataSet
+  filepath: "data/01_raw/Frota Clientes - Itaete Jales.xlsx"
+  load_args:
+    sheet_name: "Planilha1"

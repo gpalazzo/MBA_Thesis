@@ -7,6 +7,7 @@ from .commons import (
     calculate_RSI,
     calculate_SMA,
     col_string_normalizer,
+    cria_datas,
     cria_indices_oscilacao,
     define_janela_datas,
     filtra_data_janelas,
