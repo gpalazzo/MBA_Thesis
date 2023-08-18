@@ -7,7 +7,7 @@ import pandas as pd
 
 from itaete_buy_prop.utils import (
     aplica_threshold_var,
-    cria_indices_oscilacao,
+    calculate_SMA,
     define_janela_datas,
     filtra_data_janelas,
     seleciona_janelas,
@@ -53,11 +53,15 @@ def precos_trator_potencia_fte(df: pd.DataFrame,
             dfs_inner_loop = []
             for col in dfaux.set_index(DATE_COL).columns:
                 _df = dfaux[[DATE_COL] + [col]]
-                df_oscl_idx = cria_indices_oscilacao(df=_df,
-                                                      janela_agg_dias=tamanho_janela_dias,
-                                                      value_col=col,
-                                                      date_col=DATE_COL)
-                df_oscl_idx = df_oscl_idx.set_index(DATE_COL).add_prefix(f"px_trator_pot_{col}_")
+                # df_oscl_idx = cria_indices_oscilacao(df=_df,
+                #                                       janela_agg_dias=tamanho_janela_dias,
+                #                                       value_col=col,
+                #                                       date_col=DATE_COL)
+                df_oscl_idx = calculate_SMA(data=_df,
+                                            ndays=tamanho_janela_dias,
+                                            value_col=col,
+                                            date_col=DATE_COL)
+                df_oscl_idx = df_oscl_idx.set_index(DATE_COL).add_prefix(f"{col}_")
                 dfs_inner_loop.append(df_oscl_idx)
 
             fteaux_df = reduce(lambda left, right: pd.merge(left, right, left_index=True, right_index=True, how="inner"),
@@ -67,7 +71,7 @@ def precos_trator_potencia_fte(df: pd.DataFrame,
             define_janelas = define_janela_datas(data_inicio=data_inferior,
                                                 qtd_janelas=qtd_janelas,
                                                 tamanho_janela_dias=tamanho_janela_dias)
-            define_janelas = seleciona_janelas(janelas=define_janelas, slc_janelas_numero=[1, 12])
+            define_janelas = seleciona_janelas(janelas=define_janelas, slc_janelas_numero=[1, 6, 12])
 
             fteaux_df = filtra_data_janelas(df=fteaux_df,
                                         date_col_name=DATE_COL,
@@ -79,7 +83,7 @@ def precos_trator_potencia_fte(df: pd.DataFrame,
             fte_df = pd.concat([fte_df, fteaux_df])
 
     fte_df = fte_df.fillna(0)
-    fte_df = aplica_threshold_var(df=fte_df, date_col=BASE_JOIN_COLS, var_threshold=5000)
+    fte_df = aplica_threshold_var(df=fte_df, date_col=BASE_JOIN_COLS, var_threshold=1e6)
 
     assert fte_df.isnull().sum().sum() == 0, "Nulos na feature, revisar"
     assert fte_df.shape[0] == fte_df[BASE_JOIN_COLS].drop_duplicates().shape[0], \

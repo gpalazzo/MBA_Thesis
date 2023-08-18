@@ -41,3 +41,14 @@ prm_preco_trator_potencia:
 prm_preco_trator_cxlaranja:
   type: pandas.ParquetDataSet
   filepath: "data/03_primary/prm_preco_trator_cxlaranja.parquet"
+prm_prod_laranja_sp:
+  type: pandas.ParquetDataSet
+  filepath: "data/03_primary/prm_prod_laranja_sp.parquet"
+
+prm_area_prod_cliente:
+  type: pandas.ParquetDataSet
+  filepath: "data/03_primary/prm_area_prod_cliente.parquet"
+
+prm_frota_clientes:
+  type: pandas.ParquetDataSet
+  filepath: "data/03_primary/prm_frota_clientes.parquet"

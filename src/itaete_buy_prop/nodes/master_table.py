@@ -30,6 +30,7 @@ def cria_master_table(spine: pd.DataFrame,
     # o 1o join é a nível de cliente, logo é o mais granular. então o 2o join não pode ter mais linhas que esse primeiro
     ALL_CLIENTE_DFS = [spine] + cliente_args
     mt_df = reduce(lambda left, right: pd.merge(left, right, on=CLIENTE_BASE_JOIN_COLS, how="inner"), ALL_CLIENTE_DFS)
+
     # 2o join a nível somente de datas
     ALL_DATE_DFS = [mt_df] + date_args
     mt_df_all = reduce(lambda left, right: pd.merge(left, right, on=DATE_BASE_JOIN_COLS, how="inner"), ALL_DATE_DFS)

@@ -47,4 +47,6 @@ MASTER_TABLE_DATASETS = ["fte_analise_fin",
                         "fte_ipca",
                         "fte_selic",
                         "fte_preco_trator_potencia",
-                        "fte_preco_trator_cxlaranja"]
+                        "fte_preco_trator_cxlaranja",
+                        "fte_producao",
+                        "fte_custo"]

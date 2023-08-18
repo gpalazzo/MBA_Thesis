@@ -59,7 +59,7 @@ def selic_fte(df: pd.DataFrame, spine: pd.DataFrame) -> pd.DataFrame:
 
 def _transforma_selic_ano(valor_ipca: float, params: Dict[str, int]) -> float:
     return math.pow(1 + valor_ipca,
-                    params["qtd_dias_uteis_mes"] / params["qtd_dias_uteis_ano"]) - 1
+                    params["qtd_dias_uteis_target"] / params["qtd_dias_uteis_ano"]) - 1
 
 
 def _pega_ultimo_dia_mes(date: datetime.date) -> datetime.date:
