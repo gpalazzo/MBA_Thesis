@@ -45,3 +45,7 @@ prm_prod_laranja_sp:
 prm_area_prod_cliente:
   type: pandas.ParquetDataSet
   filepath: "data/03_primary/prm_area_prod_cliente.parquet"
+
+prm_frota_clientes:
+  type: pandas.ParquetDataSet
+  filepath: "data/03_primary/prm_frota_clientes.parquet"

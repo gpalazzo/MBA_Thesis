@@ -319,3 +319,12 @@ def aplica_threshold_var(df: pd.DataFrame,
     df = df.reset_index()
 
     return df
+
+
+def cria_datas(data_inicio: pd.Timestamp,
+               data_fim: pd.Timestamp,
+               freq: str = "D") -> pd.DataFrame:
+
+    datas = pd.date_range(start=data_inicio, end=data_fim, freq=freq)
+    df = pd.DataFrame({"data": datas})
+    return df

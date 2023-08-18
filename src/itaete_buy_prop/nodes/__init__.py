@@ -2,6 +2,14 @@
 from .analise_fin import analise_fin_fte, analise_fin_prm
 from .cen_visitas import cen_visitas_prm
 from .clientes import clientes_prm
+from .custo_producao import (
+    area_prod_cliente_prm,
+    custo_fte,
+    custo_prod_fte,
+    frota_clientes_prm,
+    prod_laranja_sp_prm,
+    producao_fte,
+)
 from .funil_vendas import funil_vendas_prm
 from .ipca import ipca_fte, ipca_prm
 from .logreg import logreg_model_fit, logreg_model_predict, logreg_model_relatorio
@@ -18,7 +26,6 @@ from .precos_trator_potencia import (
     precos_trator_potencia_fte,
     precos_trator_potencia_prm,
 )
-from .producao import area_prod_cliente_prm, prod_laranja_sp_prm, producao_fte
 from .selic import selic_fte, selic_prm
 from .spine import spine_labeling, spine_preprocessing
 from .yfinance import yfinance_fte, yfinance_prm, yfinance_raw
