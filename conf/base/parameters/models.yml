@@ -1,95 +1,21 @@
-# RESULTADOS
-# features: ["fte_analise_fin", "fte_usdbrl_yfinance"]
-# ------
+# MELHOR RESULTADO
+
+# features dataset: ["fte_analise_fin", "fte_usdbrl_yfinance", "fte_precos_diesel",
+#           "fte_precos_laranja", "fte_ipca", "fte_selic", "fte_preco_trator_potencia",
+#           "fte_producao"]
+
+# features final: ['tempo_medio_dias_compras', 'valor_total_compras',
+      #  'dif_dias_ultima_compra', 'receita_media',
+      #  'janela6__usdbrl_pxclose_cumsum',
+      #  'janela6__usdbrl_pxhighlow_diff_cumsum',
+      #  'janela12__usdbrl_pxclose_cumsum',
+      #  'janela12__usdbrl_pxhighlow_diff_cumsum',
+      #  'janela1__usdbrl_pxclose_cumsum',
+      #  'janela1__usdbrl_pxhighlow_diff_cumsum']
 
 # model_params_extra:
-#   solver: "saga"
-#   penalty: "l1"
-#   tol: 0.001
-#   C: 339.3221771895323
-#   class_weight: "balanced"
-#   fit_intercept: True
-#   max_iter: 100
-
-#   AUC = 0.647
-
-#               precision    recall  f1-score   support
-
-#            0       0.89      0.54      0.67       143
-#            1       0.32      0.76      0.45        41
-
-#     accuracy                           0.59       184
-#    macro avg       0.60      0.65      0.56       184
-# weighted avg       0.76      0.59      0.62       184
-
-# array([[0.41847826, 0.35869565],
-#        [0.05434783, 0.16847826]])
-
-# ------------------------
-
-# features: ["fte_analise_fin", "fte_usdbrl_yfinance", "fte_precos_diesel"]
-# ------
-
-# model_params_extra:
-#   solver: "saga"
-#   penalty: "l1"
-#   tol: 0.0001
-#   C: 494.1713361323828
-#   class_weight: "balanced"
-#   fit_intercept: True
-#   max_iter: 100
-
-#   AUC = 0.707
-
-#               precision    recall  f1-score   support
-
-#            0       0.93      0.66      0.77       202
-#            1       0.31      0.75      0.43        40
-
-#     accuracy                           0.68       242
-#    macro avg       0.62      0.71      0.60       242
-# weighted avg       0.83      0.68      0.72       242
-
-# array([[0.55371901, 0.28099174],
-#        [0.04132231, 0.12396694]])
-
-# ------------------------
-
-# features: ["fte_analise_fin", "fte_usdbrl_yfinance", "fte_precos_diesel", "fte_precos_laranja"]
-# ------
-
-# model_params_extra:
-#   solver: "saga"
-#   penalty: "l1"
-#   tol: 0.0001
-#   C: 0.5689866029018293
-#   class_weight: "balanced"
-#   fit_intercept: True
-#   max_iter: 100
-
-#   AUC = 0.719
-
-#               precision    recall  f1-score   support
-
-#            0       0.94      0.64      0.76       202
-#            1       0.30      0.80      0.44        40
-
-#     accuracy                           0.67       242
-#    macro avg       0.62      0.72      0.60       242
-# weighted avg       0.84      0.67      0.71       242
-
-# array([[0.53305785, 0.30165289],
-#        [0.03305785, 0.1322314 ]])
-
-# ------------------------
-
-# features: ["fte_analise_fin", "fte_usdbrl_yfinance", "fte_precos_diesel",
-#           "fte_precos_laranja", "fte_ipca", "fte_selic", "fte_preco_trator_potencia"]
-# ------
-
-# model_params_extra:
-# {'C': 0.0020235896477251557,
-#  'class_weight': 'balanced',
+# {'C': 0.009102981779915217,
+#  'class_weight': None,
 #  'dual': False,
 #  'fit_intercept': False,
 #  'intercept_scaling': 1,
@@ -99,24 +25,24 @@
 #  'n_jobs': -1,
 #  'penalty': 'l2',
 #  'random_state': 0,
-#  'solver': 'sag',
-#  'tol': 0.001,
+#  'solver': 'saga',
+#  'tol': 0.0001,
 #  'verbose': 0,
 #  'warm_start': False}
 
-#   AUC = 0.806
+#   AUC = 0.865
 
 #               precision    recall  f1-score   support
 
-#            0       0.93      0.95      0.94       236
-#            1       0.74      0.66      0.70        47
+#            0       0.94      0.93      0.94        87
+#            1       0.77      0.80      0.78        25
 
-#     accuracy                           0.90       283
-#    macro avg       0.84      0.81      0.82       283
-# weighted avg       0.90      0.90      0.90       283
+#     accuracy                           0.90       112
+#    macro avg       0.86      0.87      0.86       112
+# weighted avg       0.90      0.90      0.90       112
 
-# array([[0.795053  , 0.03886926],
-#        [0.0565371 , 0.10954064]])
+# array([[0.72321429, 0.05357143],
+#        [0.04464286, 0.17857143]])
 
 logreg_params:
   # utilizar esses parâmetros independentemente de otimização
@@ -124,10 +50,10 @@ logreg_params:
     n_jobs: -1
     random_state: 0
   model_params_extra:
-    solver: "sag"
+    solver: "saga"
     penalty: "l2"
-    tol: 0.001
-    C: 0.0020235896477251557
-    class_weight: "balanced"
+    tol: 0.0001
+    C: 0.009102981779915217
+    class_weight: null
     fit_intercept: False
     max_iter: 100

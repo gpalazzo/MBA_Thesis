@@ -3,7 +3,7 @@ funil_vendas_params:
     - desistiu_da_compra
 
 selic_params:
-  qtd_dias_uteis_mes: 1
+  qtd_dias_uteis_target: 1
   qtd_dias_uteis_ano: 252
 
 trator_potencia_params:
@@ -13,3 +13,6 @@ trator_potencia_params:
     - 5078E
     - 5080E
     - 5090E
+
+producao_laranja_sp_params:
+  local: "noroeste_paulista"

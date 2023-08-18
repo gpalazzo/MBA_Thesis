@@ -18,6 +18,7 @@ from .precos_trator_potencia import (
     precos_trator_potencia_fte,
     precos_trator_potencia_prm,
 )
+from .producao import area_prod_cliente_prm, prod_laranja_sp_prm, producao_fte
 from .selic import selic_fte, selic_prm
 from .spine import spine_labeling, spine_preprocessing
 from .yfinance import yfinance_fte, yfinance_prm, yfinance_raw
