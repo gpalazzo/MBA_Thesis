@@ -49,4 +49,5 @@ MASTER_TABLE_DATASETS = ["fte_analise_fin",
                         "fte_preco_trator_potencia",
                         "fte_preco_trator_cxlaranja",
                         "fte_producao",
-                        "fte_custo"]
+                        "fte_custo",
+                        "fte_ultimos_dados"]

@@ -18,4 +18,5 @@ from .precos_trator_pipeline import (
     precos_trator_potencia_pipeline,
 )
 from .spine_pipeline import spine_pipeline
+from .ultimos_dados_pipeline import ultimos_dados_pipeline
 from .yfinance_pipeline import yfinance_pipeline
