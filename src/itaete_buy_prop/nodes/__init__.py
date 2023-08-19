@@ -32,4 +32,5 @@ from .precos_trator_potencia import (
 )
 from .selic import selic_fte, selic_prm
 from .spine import spine_labeling, spine_preprocessing
+from .ultimos_dados import ultimos_dados_fte, ultimos_dados_prm
 from .yfinance import yfinance_fte, yfinance_prm, yfinance_raw

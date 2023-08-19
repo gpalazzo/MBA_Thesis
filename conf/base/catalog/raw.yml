@@ -79,3 +79,9 @@ raw_frota_clientes:
   filepath: "data/01_raw/Frota Clientes - Itaete Jales.xlsx"
   load_args:
     sheet_name: "Planilha1"
+
+raw_ultimos_dados:
+  type: pandas.ExcelDataSet
+  filepath: "data/01_raw/Ultimos dados - Modelo.xlsx"
+  load_args:
+    sheet_name: "Planilha1"

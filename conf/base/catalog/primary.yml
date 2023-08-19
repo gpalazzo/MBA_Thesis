@@ -53,3 +53,7 @@ prm_area_prod_cliente:
 prm_frota_clientes:
   type: pandas.ParquetDataSet
   filepath: "data/03_primary/prm_frota_clientes.parquet"
+
+prm_ultimos_dados:
+  type: pandas.ParquetDataSet
+  filepath: "data/03_primary/prm_ultimos_dados.parquet"

@@ -29,6 +29,7 @@ fte_preco_trator_potencia:
 fte_preco_trator_cxlaranja:
   type: pandas.ParquetDataSet
   filepath: "data/04_feature/fte_preco_trator_cxlaranja.parquet"
+
 fte_producao:
   type: pandas.ParquetDataSet
   filepath: "data/04_feature/fte_producao.parquet"
@@ -40,3 +41,7 @@ fte_custo:
 fte_custo_producao:
   type: pandas.ParquetDataSet
   filepath: "data/04_feature/fte_custo_producao.parquet"
+
+fte_ultimos_dados:
+  type: pandas.ParquetDataSet
+  filepath: "data/04_feature/fte_ultimos_dados.parquet"
